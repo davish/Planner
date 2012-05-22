@@ -3,13 +3,12 @@
 
 import os
 import re
-from string import letters
-
+import string
 import webapp2
 import jinja2
-
+import hmac
 from google.appengine.ext import db
-
+import random
 import webapp2
 import hashlib
 
