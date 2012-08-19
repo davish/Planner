@@ -87,7 +87,7 @@ class Signup(Handler):
             u.put()
             userid_cookie = make_secure_val(str(u.key().id()))
             #self.response.headers.add_header('Set-Cookie', 'user_id=%s' % userid_cookie)
-            response.set_cookie('user_id', userid_cookie)
+            self.response.set_cookie('user_id', userid_cookie)
             self.redirect('/welcome')
 
 class LoginHandler(Handler):
