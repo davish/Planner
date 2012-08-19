@@ -4,8 +4,6 @@
 import os
 import re
 import string
-import webapp2
-import jinja2
 import hmac
 from google.appengine.ext import db
 import random

@@ -1,7 +1,6 @@
 #!/usr/bin/python
 from google.appengine.ext import db
 """ Datastore models for planner
-
 """
 class Week(db.Model):
   user = db.IntegerProperty(required = True) # ID of user who the week belongs to
