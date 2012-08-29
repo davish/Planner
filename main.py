@@ -22,7 +22,7 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
-assignments = {'eng': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''}, 
+assignments_old = {'eng': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''}, 
               'hist': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''},
               'math': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''},
               'sci': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''},
@@ -30,6 +30,13 @@ assignments = {'eng': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday':
               'other': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday': '', 'friday': ''},
               'notes': {'monday': ''}
               }
+assignments = {'mondayeng': '', 'tuesdayeng': '', 'wednesdayeng': '', 'thursdayeng': '', 'fridayeng': '',
+              'mondayhist': '', 'tuesdayhist': '', 'wednesdayhist': '', 'thursdayhist': '', 'fridayhist': '',
+              'mondaymath': '', 'tuesdaymath': '', 'wednesdaymath': '', 'thursdaymath': '', 'fridaymath': '',
+              'mondaysci': '', 'tuesdaysci': '', 'wednesdaysci': '', 'thursdaysci': '', 'fridaysci': '',
+              'mondaylang': '', 'tuesdaylang': '', 'wednesdaylang': '', 'thursdaylang': '', 'fridaylang': '',
+              'mondayother': '', 'tuesdayother': '', 'wednesdayother': '', 'thursdayother': '', 'fridayother': '',
+              'notes'}
 class Handler(webapp2.RequestHandler):
     def validate_cookie(self, cookie_name):
         name_cookie_str = self.request.cookies.get(cookie_name) # Get the cookie

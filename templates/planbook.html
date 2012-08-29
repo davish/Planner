@@ -77,7 +77,7 @@
 
 
    <div class="span11">
-    <form action="post">
+    <div id="assignments">
     <div class = "row-fluid">
       <span class="span1"></span>
       <span class='span2'>Monday</span>
@@ -90,60 +90,60 @@
     <div class='row-fluid' id="eng">
     
     <span class="span1"><br>English</span>
-    <span class="span2"><textarea name="mondayeng">{{assignments["eng"]["monday"]}}</textarea> </span>
-    <span class="span2"><textarea name="tuesdayeng">{{assignments["eng"]["tuesday"]}}</textarea> </span>
-    <span class="span2"><textarea name="wednesdayeng">{{assignments["eng"]["wednesday"]}}</textarea> </span>
-    <span class="span2"><textarea name="thursdayeng">{{assignments["eng"]["thursday"]}}</textarea> </span>
-    <span class="span2"><textarea name="fridayeng">{{assignments["eng"]["friday"]}}</textarea> </span>
+    <span class="span2"><textarea id="mondayeng">{{assignments["eng"]["monday"]}}</textarea> </span>
+    <span class="span2"><textarea id="tuesdayeng">{{assignments["eng"]["tuesday"]}}</textarea> </span>
+    <span class="span2"><textarea id="wednesdayeng">{{assignments["eng"]["wednesday"]}}</textarea> </span>
+    <span class="span2"><textarea id="thursdayeng">{{assignments["eng"]["thursday"]}}</textarea> </span>
+    <span class="span2"><textarea id="fridayeng">{{assignments["eng"]["friday"]}}</textarea> </span>
     </div>
     <div class='row-fluid' id="hist">
       <span class="span1"><br>History</span>
-    <span class="span2"> <textarea name="mondayhist">{{assignments["hist"]["monday"]}}</textarea> </span>
-    <span class="span2"> <textarea name="tuesdayhist">{{assignments["hist"]["tuesday"]}}</textarea> </span>
-    <span class="span2"> <textarea name="wednesdayhist">{{assignments["hist"]["wednesday"]}}</textarea> </span>
-   <span class="span2"> <textarea name="thursdayhist">{{assignments["hist"]["thursday"]}}</textarea> </span>
-   <span class="span2"> <textarea name="fridayhist">{{assignments["hist"]["friday"]}}</textarea> </span>
+    <span class="span2"> <textarea id="mondayhist">{{assignments["hist"]["monday"]}}</textarea> </span>
+    <span class="span2"> <textarea id="tuesdayhist">{{assignments["hist"]["tuesday"]}}</textarea> </span>
+    <span class="span2"> <textarea id="wednesdayhist">{{assignments["hist"]["wednesday"]}}</textarea> </span>
+   <span class="span2"> <textarea id="thursdayhist">{{assignments["hist"]["thursday"]}}</textarea> </span>
+   <span class="span2"> <textarea id="fridayhist">{{assignments["hist"]["friday"]}}</textarea> </span>
     </div>
 
     <div class="row-fluid" id="math">
       <span class="span1"><br>Math</span>
-      <span class="span2"><textarea name="mondaymath">{{assignments["math"]["monday"]}}</textarea> </span>
-      <span class="span2"> <textarea name="tuesdaymath">{{assignments["math"]["tuesday"]}}</textarea> </span>
-      <span class="span2"> <textarea name="wednesdaymath">{{assignments["math"]["wednesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="thursdaymath">{{assignments["math"]["thursday"]}}</textarea> </span>
-      <span class="span2"><textarea name="fridaymath">{{assignments["math"]["friday"]}}</textarea> </span>
+      <span class="span2"><textarea id="mondaymath">{{assignments["math"]["monday"]}}</textarea> </span>
+      <span class="span2"> <textarea id="tuesdaymath">{{assignments["math"]["tuesday"]}}</textarea> </span>
+      <span class="span2"> <textarea id="wednesdaymath">{{assignments["math"]["wednesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="thursdaymath">{{assignments["math"]["thursday"]}}</textarea> </span>
+      <span class="span2"><textarea id="fridaymath">{{assignments["math"]["friday"]}}</textarea> </span>
     </div>
 
     <div class="row-fluid" id="sci">
       <span class="span1"><br>Science</span>
-      <span class="span2"><textarea name="mondaysci">{{assignments["sci"]["monday"]}}</textarea> </span>
-      <span class="span2"><textarea name="tuesdaysci">{{assignments["sci"]["tuesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="wednesdaysci">{{assignments["sci"]["wednesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="thursdaysci">{{assignments["sci"]["thursday"]}}</textarea> </span>
-      <span class="span2"><textarea name="fridaysci">{{assignments["sci"]["friday"]}}</textarea> </span>
+      <span class="span2"><textarea id="mondaysci">{{assignments["sci"]["monday"]}}</textarea> </span>
+      <span class="span2"><textarea id="tuesdaysci">{{assignments["sci"]["tuesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="wednesdaysci">{{assignments["sci"]["wednesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="thursdaysci">{{assignments["sci"]["thursday"]}}</textarea> </span>
+      <span class="span2"><textarea id="fridaysci">{{assignments["sci"]["friday"]}}</textarea> </span>
     </div>
 
     <div class="row-fluid" id="lang">
       <span class="span1"><br>Language</span>
-      <span class="span2"><textarea name="mondaylang">{{assignments["lang"]["monday"]}}</textarea> </span>
-      <span class="span2"><textarea name="tuesdaylang">{{assignments["lang"]["tuesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="wednesdaylang">{{assignments["lang"]["wednesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="thursdaylang">{{assignments["lang"]["thursday"]}}</textarea> </span>
-      <span class="span2"><textarea name="fridaylang">{{assignments["lang"]["friday"]}}</textarea> </span>
+      <span class="span2"><textarea id="mondaylang">{{assignments["lang"]["monday"]}}</textarea> </span>
+      <span class="span2"><textarea id="tuesdaylang">{{assignments["lang"]["tuesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="wednesdaylang">{{assignments["lang"]["wednesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="thursdaylang">{{assignments["lang"]["thursday"]}}</textarea> </span>
+      <span class="span2"><textarea id="fridaylang">{{assignments["lang"]["friday"]}}</textarea> </span>
     </div>
     
     <div class="row-fluid" id="other">
       <span class="span1"><br>Other</span>
-      <span class="span2"><textarea name="mondayother">{{assignments["other"]["monday"]}}</textarea> </span>
-      <span class="span2"><textarea name="tuesdayother">{{assignments["other"]["tuesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="wednesdayother">{{assignments["other"]["wednesday"]}}</textarea> </span>
-      <span class="span2"><textarea name="thursdayother">{{assignments["other"]["thursday"]}}</textarea> </span>
-      <span class="span2"><textarea name="fridayother">{{assignments["other"]["friday"]}}</textarea> </span>
+      <span class="span2"><textarea id="mondayother">{{assignments["other"]["monday"]}}</textarea> </span>
+      <span class="span2"><textarea id="tuesdayother">{{assignments["other"]["tuesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="wednesdayother">{{assignments["other"]["wednesday"]}}</textarea> </span>
+      <span class="span2"><textarea id="thursdayother">{{assignments["other"]["thursday"]}}</textarea> </span>
+      <span class="span2"><textarea id="fridayother">{{assignments["other"]["friday"]}}</textarea> </span>
     </div>
     
     <div class="row-fluid" id="notes">
       <span class="span1"><br>Notes</span>
-      <span class="span2"> <textarea name="notes">{{assignments["notes"]["monday"]}}</textarea></span>
+      <span class="span2"> <textarea id="notes">{{assignments["notes"]["monday"]}}</textarea></span>
     </div>
 
 	<div class="row-fluid">
@@ -155,7 +155,7 @@
       </div>
     </span>
 	</div>
-</form>
+</div>
 	</div> <!--/row -->
     </div> <!-- /container -->
 
@@ -222,6 +222,16 @@
       	  }
     	  };
 
+        $.ajax({
+          dataType: "json",
+          data: days,
+          success: function(data) {
+            $("#eng").find("textarea").each(function() {
+              $(this).text(data[$(this).attr("id")])
+            });
+          },
+
+        });
 
       });
       </script>
