@@ -8,7 +8,7 @@ import webapp2
 import jinja2
 
 from google.appengine.ext import db
-
+import logging
 # URL handelers
 import user_interactions
 import misc
@@ -36,7 +36,7 @@ assignments = {'mondayeng': '', 'tuesdayeng': '', 'wednesdayeng': '', 'thursdaye
               'mondaysci': '', 'tuesdaysci': '', 'wednesdaysci': '', 'thursdaysci': '', 'fridaysci': '',
               'mondaylang': '', 'tuesdaylang': '', 'wednesdaylang': '', 'thursdaylang': '', 'fridaylang': '',
               'mondayother': '', 'tuesdayother': '', 'wednesdayother': '', 'thursdayother': '', 'fridayother': '',
-              'notes'}
+              'notes': ''}
 class Handler(webapp2.RequestHandler):
     def validate_cookie(self, cookie_name):
         name_cookie_str = self.request.cookies.get(cookie_name) # Get the cookie
@@ -60,8 +60,8 @@ class Handler(webapp2.RequestHandler):
 class MainPage(Handler):
   def get(self):
     self.render("planbook.html", assignments=assignments, user = database.User.get_by_id(int(self.validate_cookie('user_id'))) if self.validate_cookie('user_id') else None)
-  def post():
-    pass
+  def post(self):
+    logging.error(self.request.headers)
 class HomePage(Handler):
   def get(self):
     self.write("Home page!")
