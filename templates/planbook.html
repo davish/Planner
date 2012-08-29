@@ -36,8 +36,14 @@
           <div class="nav-collapse">
             <ul class="nav"><li><a href="/">Home</a></li></ul>
             <ul class="nav pull-right">
-            <li><a href="/login">Login</a></li>
-            <li><a href="/signup">Sign Up</a></li>
+              {% if user %}
+              <li><a href="#">{{user.username}}</a></li>
+              <li><a href="/logout">Logout</a></li>
+              {% else %}
+              <li><a href="/login">Login</a></li>
+              <li><a href="/signup">Sign Up</a></li>
+              {% endif %}
+
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -71,7 +77,7 @@
 
 
    <div class="span11">
-    <form>
+    <form action="post">
     <div class = "row-fluid">
       <span class="span1"></span>
       <span class='span2'>Monday</span>
@@ -83,7 +89,7 @@
 
     <div class='row-fluid' id="eng">
     
-    <span class="span1"><input type="submit"><br>English</span>
+    <span class="span1"><br>English</span>
     <span class="span2"><textarea name="mondayeng">{{assignments["eng"]["monday"]}}</textarea> </span>
     <span class="span2"><textarea name="tuesdayeng">{{assignments["eng"]["tuesday"]}}</textarea> </span>
     <span class="span2"><textarea name="wednesdayeng">{{assignments["eng"]["wednesday"]}}</textarea> </span>
@@ -141,7 +147,13 @@
     </div>
 
 	<div class="row-fluid">
-    <input type="submit">
+    <span class="span1 offset6">
+      <div class="btn-group">
+        <button class="btn"> &lt;&lt;</button>
+        <button class="btn" id="save"> Save </button>
+        <button class="btn"> &gt;&gt;</button>
+      </div>
+    </span>
 	</div>
 </form>
 	</div> <!--/row -->
@@ -165,55 +177,54 @@
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
 
-    <!--<script type="text/javascript">
-      $('input#mybutton').click(function() {
-        var text = $('textarea#mondayeng').val();
-
+    <script type="text/javascript">
+      $('button#save').click(function() {
+        
     	  var days = {
     	  
-    	  'monday': {
-    	  	'eng': $('textarea#mondayeng').val(),
-    	  	'hist': $('textarea#mondayhist').val(),
-    	  	'math': $('textarea#mondaymath').val(),
-    	  	'sci': $('textarea#mondaysci').val(),
-    	  	'lang': $('textarea#mondaylang').val(),
-    	  },
-    	  
-    	  'tuesday': {
-    	  	'eng': $('textarea#tuesdayeng').val(),
-    	  	'hist': $('textarea#tuesdayhist').val(),
-    	  	'math': $('textarea#tuesdaymath').val(),
-    	  	'sci': $('textarea#tuesdaysci').val(),
-    	  	'lang': $('textarea#tuesdaylang').val(),
-    	  },
-    	  
-    	  'wednesday': {
-    	  	'eng': $('textarea#wednesdayeng').val(),
-    	  	'hist': $('textarea#wednesdayhist').val(),
-    	  	'math': $('textarea#wednesdaymath').val(),
-    	  	'sci': $('textarea#wednesdaysci').val(),
-    	  	'lang': $('textarea#wednesdaylang').val(),
-    	  },
-    	  'thursday': {
-    	  	'eng': $('textarea#thursdayeng').val(),
-    	  	'hist': $('textarea#thursdayhist').val(),
-    	  	'math': $('textarea#thursdaymath').val(),
-    	  	'sci': $('textarea#thursdaysci').val(),
-    	  	'lang': $('textarea#thursdaylang').val(),
-    	  },
-    	  
-    	  'friday': {
-    	  	'eng': $('textarea#fridayeng').val(),
-    	  	'hist': $('textarea#fridayhist').val(),
-    	  	'math': $('textarea#fridaymath').val(),
-    	  	'sci': $('textarea#fridaysci').val(),
-    	  	'lang': $('textarea#fridaylang').val(),
-    	  }
+      	  'monday': {
+      	  	'eng': $('textarea#mondayeng').val(),
+      	  	'hist': $('textarea#mondayhist').val(),
+      	  	'math': $('textarea#mondaymath').val(),
+      	  	'sci': $('textarea#mondaysci').val(),
+      	  	'lang': $('textarea#mondaylang').val(),
+      	  },
+      	  
+      	  'tuesday': {
+      	  	'eng': $('textarea#tuesdayeng').val(),
+      	  	'hist': $('textarea#tuesdayhist').val(),
+      	  	'math': $('textarea#tuesdaymath').val(),
+      	  	'sci': $('textarea#tuesdaysci').val(),
+      	  	'lang': $('textarea#tuesdaylang').val(),
+      	  },
+      	  
+      	  'wednesday': {
+      	  	'eng': $('textarea#wednesdayeng').val(),
+      	  	'hist': $('textarea#wednesdayhist').val(),
+      	  	'math': $('textarea#wednesdaymath').val(),
+      	  	'sci': $('textarea#wednesdaysci').val(),
+      	  	'lang': $('textarea#wednesdaylang').val(),
+      	  },
+      	  'thursday': {
+      	  	'eng': $('textarea#thursdayeng').val(),
+      	  	'hist': $('textarea#thursdayhist').val(),
+      	  	'math': $('textarea#thursdaymath').val(),
+      	  	'sci': $('textarea#thursdaysci').val(),
+      	  	'lang': $('textarea#thursdaylang').val(),
+      	  },
+      	  
+      	  'friday': {
+      	  	'eng': $('textarea#fridayeng').val(),
+      	  	'hist': $('textarea#fridayhist').val(),
+      	  	'math': $('textarea#fridaymath').val(),
+      	  	'sci': $('textarea#fridaysci').val(),
+      	  	'lang': $('textarea#fridaylang').val(),
+      	  }
     	  };
 
 
       });
-      </script> -->
+      </script>
 
   </body>
 </html>

@@ -12,6 +12,9 @@ from google.appengine.ext import db
 # URL handelers
 import user_interactions
 import misc
+import database
+from hashing import *
+
 
 
 
@@ -28,6 +31,16 @@ assignments = {'eng': {'monday': '', 'tuesday': '', 'wednesday': '', 'thursday':
               'notes': {'monday': ''}
               }
 class Handler(webapp2.RequestHandler):
+    def validate_cookie(self, cookie_name):
+        name_cookie_str = self.request.cookies.get(cookie_name) # Get the cookie
+        if name_cookie_str: # If there is a cookie
+          cookie_val = check_secure_val(name_cookie_str) # Make sure that it's a valid cookie
+          # u = User.get_by_id(int(cookie_val))
+          if cookie_val: # If it's valid
+            return cookie_val # Return the value of the cookie
+          else: # If not
+            return None # Return None
+
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
     def render_str(self, template, **params):
@@ -35,9 +48,13 @@ class Handler(webapp2.RequestHandler):
         return t.render(params)
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+
 class MainPage(Handler):
   def get(self):
-    self.render("planbook.html", assignments=assignments)
+    self.render("planbook.html", assignments=assignments, user = database.User.get_by_id(int(self.validate_cookie('user_id'))) if self.validate_cookie('user_id') else None)
+  def post():
+    pass
 class HomePage(Handler):
   def get(self):
     self.write("Home page!")
