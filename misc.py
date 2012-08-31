@@ -7,8 +7,8 @@ from string import letters
 
 import jinja2
 
-
 from google.appengine.ext import db
+from datetime import date, timedelta, datetime
 
 import webapp2
 
@@ -21,7 +21,6 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
 
-
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -30,6 +29,8 @@ class Handler(webapp2.RequestHandler):
         return t.render(params)
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
+
+
 
 class WelcomeHandler(Handler):
   def get(self):
