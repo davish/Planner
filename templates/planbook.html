@@ -79,13 +79,14 @@
    <div class="span11">
     <div id="assignments">
     <div class = "row-fluid">
-      <span class="span1"></span>
+      <span class="span1" id="date">{{assignments["date"]}}</span>
       <span class='span2'>Monday</span>
       <span class='span2'>Tuesday</span>
       <span class='span2'>Wednesday</span>
       <span class='span2'>Thursday</span>
       <span class='span2'>Friday</span>
     </div>
+
 
     <div class='row-fluid' id="eng">
     
@@ -149,9 +150,9 @@
 	<div class="row-fluid">
     <span class="span1 offset6">
       <div class="btn-group">
-        <button class="btn"> &lt;&lt;</button>
+        <button class="btn" id="back"> &lt;&lt;</button>
         <button class="btn" id="save"> Save </button>
-        <button class="btn"> &gt;&gt;</button>
+        <button class="btn" id="next"> &gt;&gt;</button>
       </div>
     </span>
 	</div>
@@ -181,58 +182,78 @@
       
               $('#save').click(function() {
                 
-      
                 $.ajax({
                   dataType: "json",
-                  data: { 'monday': {
-                          'eng': $('textarea#mondayeng').val(),
-                          'hist': $('textarea#mondayhist').val(),
-                          'math': $('textarea#mondaymath').val(),
-                          'sci': $('textarea#mondaysci').val(),
-                          'lang': $('textarea#mondaylang').val(),
-                        },
-                        
-                        'tuesday': {
-                          'eng': $('textarea#tuesdayeng').val(),
-                          'hist': $('textarea#tuesdayhist').val(),
-                          'math': $('textarea#tuesdaymath').val(),
-                          'sci': $('textarea#tuesdaysci').val(),
-                          'lang': $('textarea#tuesdaylang').val(),
-                        },
-                        
-                        'wednesday': {
-                          'eng': $('textarea#wednesdayeng').val(),
-                          'hist': $('textarea#wednesdayhist').val(),
-                          'math': $('textarea#wednesdaymath').val(),
-                          'sci': $('textarea#wednesdaysci').val(),
-                          'lang': $('textarea#wednesdaylang').val(),
-                        },
-                        'thursday': {
-                          'eng': $('textarea#thursdayeng').val(),
-                          'hist': $('textarea#thursdayhist').val(),
-                          'math': $('textarea#thursdaymath').val(),
-                          'sci': $('textarea#thursdaysci').val(),
-                          'lang': $('textarea#thursdaylang').val(),
-                        },
-                        
-                        'friday': {
-                          'eng': $('textarea#fridayeng').val(),
-                          'hist': $('textarea#fridayhist').val(),
-                          'math': $('textarea#fridaymath').val(),
-                          'sci': $('textarea#fridaysci').val(),
-                          'lang': $('textarea#fridaylang').val(),
-                        }
-                      },
+                  data: {'mondayeng': $("textarea#mondayeng").val(), 'tuesdayeng': $("textarea#tuesdayeng").val(), 'wednesdayeng': $("textarea#wednesdayeng").val(), 'thursdayeng': $("textarea#thursdayeng").val(), 'fridayeng': $("textarea#fridayeng").val(), 
+                    'mondayhist': $("textarea#mondayhist").val(), 'tuesdayhist': $("textarea#tuesdayhist").val(), 'wednesdayhist': $("textarea#wednesdayhist").val(), 'thursdayhist': $("textarea#thursdayhist").val(), 'fridayhist': $("textarea#fridayhist").val(), 
+                    'mondaymath': $("textarea#mondaymath").val(), 'tuesdaymath': $("textarea#tuesdaymath").val(), 'wednesdaymath': $("textarea#wednesdaymath").val(), 'thursdaymath': $("textarea#thursdaymath").val(), 'fridaymath': $("textarea#fridaymath").val(), 
+                    'mondaysci': $("textarea#mondaysci").val(), 'tuesdaysci': $("textarea#tuesdaysci").val(), 'wednesdaysci': $("textarea#wednesdaysci").val(), 'thursdaysci': $("textarea#thursdaysci").val(), 'fridaysci': $("textarea#fridaysci").val(), 
+                    'mondaylang': $("textarea#mondaylang").val(), 'tuesdaylang': $("textarea#tuesdaylang").val(), 'wednesdaylang': $("textarea#wednesdaylang").val(), 'thursdaylang': $("textarea#thursdaylang").val(), 'fridaylang': $("textarea#fridaylang").val(), 
+                    'mondayother': $("textarea#mondayother").val(), 'tuesdayother': $("textarea#tuesdayother").val(), 'wednesdayother': $("textarea#wednesdayother").val(), 'thursdayother': $("textarea#thursdayother").val(), 'fridayother': $("textarea#fridayother").val(), 
+                    'notes': $("textarea#notes").val(),
+                    'action': "save", 'date': $("span#date").val()
+                  },
                   type: "POST",
 
                   success: function(data) {
+                    $("span#date").text(data['date']);
+                    //delete data['date']
                     $("#assignments").find("textarea").each(function() {
-                      $(this).text(data[$(this).attr("id")])
+                      $(this).text(data[$(this).attr("id")]);
                     });
                   } 
       
                 });
+              });
+
+              $("#back").click(function() {
+                $.ajax({
+                  dataType: "json",
+                  data: {'mondayeng': $("textarea#mondayeng").val(), 'tuesdayeng': $("textarea#tuesdayeng").val(), 'wednesdayeng': $("textarea#wednesdayeng").val(), 'thursdayeng': $("textarea#thursdayeng").val(), 'fridayeng': $("textarea#fridayeng").val(), 
+                    'mondayhist': $("textarea#mondayhist").val(), 'tuesdayhist': $("textarea#tuesdayhist").val(), 'wednesdayhist': $("textarea#wednesdayhist").val(), 'thursdayhist': $("textarea#thursdayhist").val(), 'fridayhist': $("textarea#fridayhist").val(), 
+                    'mondaymath': $("textarea#mondaymath").val(), 'tuesdaymath': $("textarea#tuesdaymath").val(), 'wednesdaymath': $("textarea#wednesdaymath").val(), 'thursdaymath': $("textarea#thursdaymath").val(), 'fridaymath': $("textarea#fridaymath").val(), 
+                    'mondaysci': $("textarea#mondaysci").val(), 'tuesdaysci': $("textarea#tuesdaysci").val(), 'wednesdaysci': $("textarea#wednesdaysci").val(), 'thursdaysci': $("textarea#thursdaysci").val(), 'fridaysci': $("textarea#fridaysci").val(), 
+                    'mondaylang': $("textarea#mondaylang").val(), 'tuesdaylang': $("textarea#tuesdaylang").val(), 'wednesdaylang': $("textarea#wednesdaylang").val(), 'thursdaylang': $("textarea#thursdaylang").val(), 'fridaylang': $("textarea#fridaylang").val(), 
+                    'mondayother': $("textarea#mondayother").val(), 'tuesdayother': $("textarea#tuesdayother").val(), 'wednesdayother': $("textarea#wednesdayother").val(), 'thursdayother': $("textarea#thursdayother").val(), 'fridayother': $("textarea#fridayother").val(), 
+                    'notes': $("textarea#notes").val(),
+                    'action': "back", 'date': $("span#date").val()
+                  },
+                  type: "POST",
+
+                  success: function(data) {
+                    $("span#date").text(data['date']);
+                    //delete data['date']
+                    $("#assignments").find("textarea").each(function() {
+                      $(this).text(data[$(this).attr("id")]);
+                    });
+                  } 
       
+                });
+              });
+
+              $("#next").click(function() {
+                $.ajax({
+                  dataType: "json",
+                  data: {'mondayeng': $("textarea#mondayeng").val(), 'tuesdayeng': $("textarea#tuesdayeng").val(), 'wednesdayeng': $("textarea#wednesdayeng").val(), 'thursdayeng': $("textarea#thursdayeng").val(), 'fridayeng': $("textarea#fridayeng").val(), 
+                    'mondayhist': $("textarea#mondayhist").val(), 'tuesdayhist': $("textarea#tuesdayhist").val(), 'wednesdayhist': $("textarea#wednesdayhist").val(), 'thursdayhist': $("textarea#thursdayhist").val(), 'fridayhist': $("textarea#fridayhist").val(), 
+                    'mondaymath': $("textarea#mondaymath").val(), 'tuesdaymath': $("textarea#tuesdaymath").val(), 'wednesdaymath': $("textarea#wednesdaymath").val(), 'thursdaymath': $("textarea#thursdaymath").val(), 'fridaymath': $("textarea#fridaymath").val(), 
+                    'mondaysci': $("textarea#mondaysci").val(), 'tuesdaysci': $("textarea#tuesdaysci").val(), 'wednesdaysci': $("textarea#wednesdaysci").val(), 'thursdaysci': $("textarea#thursdaysci").val(), 'fridaysci': $("textarea#fridaysci").val(), 
+                    'mondaylang': $("textarea#mondaylang").val(), 'tuesdaylang': $("textarea#tuesdaylang").val(), 'wednesdaylang': $("textarea#wednesdaylang").val(), 'thursdaylang': $("textarea#thursdaylang").val(), 'fridaylang': $("textarea#fridaylang").val(), 
+                    'mondayother': $("textarea#mondayother").val(), 'tuesdayother': $("textarea#tuesdayother").val(), 'wednesdayother': $("textarea#wednesdayother").val(), 'thursdayother': $("textarea#thursdayother").val(), 'fridayother': $("textarea#fridayother").val(), 
+                    'notes': $("textarea#notes").val(),
+                    'action': "next", 'date': $("span#date").val()
+                  },
+                  type: "POST",
+
+                  success: function(data) {
+                    $("span#date").text(data['date']);
+                    //delete data['date']
+                    $("#assignments").find("textarea").each(function() {
+                      $(this).text(data[$(this).attr("id")]);
+                    });
+                  } 
+      
+                });
               });
         
     </script>
