@@ -83,13 +83,15 @@ class MainPage(Handler):
     for i in self.request.arguments():
       assn[i] = self.request.get(i)
 
-    # Check if week already exists in the datastore
     week = assn['date']
     usr = self.validate_cookie('user_id')
     action = assn['action']
+
     del assn['action']
     del assn['date']
-    result = db.GqlQuery("SELECT * FROM Week WHERE week = :week AND user = :user LIMIT 1", week = week, user = usr)
+
+    # Check if week already exists in the datastore
+    result = db.Query(Week).filter("user =", usr).filter("week =", week).fetch(limit=1)
     
     # Save to datastore
     if result:
@@ -101,6 +103,32 @@ class MainPage(Handler):
       a.put()
 
     # Response
+
+    d = ""
+    if action == "save":
+      d = week
+
+    elif action == "back":
+      m = DATE_REGEX.match(week)
+      new_date = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+      new_date_isocal = new_date.isocalendar()
+      d = week_start_date(new_date_isocal[0], new_date_isocal[1]-1).isoformat()
+
+    elif action == "next":
+      m = DATE_REGEX.match(week)
+      new_date = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+      new_date_isocal = new_date.isocalendar()
+      d = week_start_date(new_date_isocal[0], new_date_isocal[1] + 1).isoformat()
+
+    result = db.Query(Week).filter("user =", usr).filter("week =", d).fetch(limit=1)
+    assigns = {}
+    if result:
+      result = result[0]
+      assigns = result.assignments
+    else:
+      assigns = assignments
+      assigns['date'] = d
+
 
 
     self.response.headers['Content-Type'] = "text/json"
