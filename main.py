@@ -71,7 +71,7 @@ DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})')
 class MainPage(Handler):
   
   def get(self):
-    usr = int(self.validate_cookie('user_id'))
+    usr = self.validate_cookie('user_id')
     
     if usr:
       usr = int(usr)
