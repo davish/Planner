@@ -88,7 +88,7 @@ class Signup(Handler):
             userid_cookie = make_secure_val(str(u.key().id()))
             #self.response.headers.add_header('Set-Cookie', 'user_id=%s' % userid_cookie)
             self.response.set_cookie('user_id', userid_cookie)
-            self.redirect('/welcome')
+            self.redirect('/planner')
 
 class LoginHandler(Handler):
   def get(self):
@@ -104,4 +104,10 @@ class LoginHandler(Handler):
       if valid_pw(username, password, result[0].password):
         userid_cookie = make_secure_val(str(result[0].key().id()))
         self.response.headers.add_header('Set-Cookie', 'user_id=%s' % userid_cookie)
-        self.redirect('/welcome')
+        self.redirect('/planner')
+    else:
+        self.render("login.html")
+class LogoutHandler(Handler):
+    def get(self):
+        self.response.headers.add_header('Set-Cookie', 'user_id=')
+        self.redirect('/login')

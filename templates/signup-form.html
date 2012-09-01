@@ -53,23 +53,25 @@
     <div class="container">
 
       <form method="post">
-        <label>
-          Username
-          <input type="text" name="username" value="{{username}}"> <span class="error">{{error_username}}</span>
-        </label>
-        <label>
-          Password
-          <input type="password" name="password"> <span class="error">{{error_password}}</span>
-        </label>
-        <label>
-          Verify Password
-          <input type="password" name="verify"> <span class="error">{{error_verify}}</span>
-        </label>
+        <table>
+          <tr>
+            <td>Username</td>
+            <td><input type="text" name="username" value="{{username}}"> </td> <span class="error">{{error_username}}</span>
+          </tr>
+          <tr>
+            <td>Password</td>
+            <td><input type="password" name="password"> </td> <span class="error">{{error_password}}</span>
+          </tr>
+          <tr>
+            <td>Verify Password</td>
+            <td><input type="password" name="verify"></td> <span class="error">{{error_verify}}</span>
+          </tr>
 
-        <label>
-          Email
-          <input type="text" name="email" value="{{email}}"> <span class="error">{{error_email}}</span>
-        </label>
+          <tr>
+            <td>Email</td>
+            <td><input type="text" name="email" value="{{email}}"></td> <span class="error">{{error_email}}</span>
+          </tr>
+        </table>
         <input type="submit">
       </form>
 	  
