@@ -72,12 +72,12 @@ class MainPage(Handler):
   
   def get(self):
     usr = int(self.validate_cookie('user_id'))
-    """
+    
     if usr:
       usr = int(usr)
     else:  
       self.redirect('/login')
-      return """
+      return
     
     y = datetime.now().isocalendar()[0]
     w = datetime.now().isocalendar()[1]
