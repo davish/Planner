@@ -81,14 +81,14 @@ class MainPage(Handler):
     result = db.Query(database.Week).filter("user =", usr).filter("week =", starting_date).fetch(limit=1)
 
     if result:
-      result = result[0]
-      logging.error(result.assignments)
+      result = result[0].assignments
+      logging.error(result)
 
     else:
       result = assignments
       assignments['date'] = starting_date # use the starting date as the date
 
-    assn = json.loads(result.assignments)
+    assn = json.loads(result)
 
     self.render("planbook.html", assignments=assn, user = database.User.get_by_id(usr) if usr else None)
 
@@ -98,13 +98,11 @@ class MainPage(Handler):
     for i in self.request.arguments():
       assn[i] = self.request.get(i)
 
-    logging.error(assn)
+    # logging.error(assn)
     week = assn['date']
     usr = int(self.validate_cookie('user_id'))
     action = assn['action']
 
-    #logging.error(assn)
-    logging.error(usr)
     del assn['action']
 
     # Check if week already exists in the datastore
@@ -148,11 +146,11 @@ class MainPage(Handler):
     else:
       assigns = assignments
       assigns['date'] = d
+      assigns = json.dumps(assigns)
 
-    assigns = json.dumps(assigns)
-
+    logging.error(assigns)
     self.response.headers['Content-Type'] = "text/json"
-    self.write(json.dumps(assigns))
+    self.write(assigns)
 
 class HomePage(Handler):
   def get(self):
