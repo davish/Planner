@@ -73,32 +73,52 @@ class MainPage(Handler):
   def get(self):
     y = datetime.now().isocalendar()[0]
     w = datetime.now().isocalendar()[1]
-    starting_date = week_start_date(y,w)
+    starting_date = week_start_date(y,w).isoformat()
 
-    assignments['date'] = starting_date.isoformat() # use the starting date as the date
-    self.render("planbook.html", assignments=assignments, user = database.User.get_by_id(int(self.validate_cookie('user_id'))) if self.validate_cookie('user_id') else None)
+    usr = int(self.validate_cookie('user_id'))
+    logging.error(usr)
+
+    result = db.Query(database.Week).filter("user =", usr).filter("week =", starting_date).fetch(limit=1)
+
+    if result:
+      result = result[0]
+      logging.error(result.assignments)
+
+    else:
+      result = assignments
+      assignments['date'] = starting_date # use the starting date as the date
+
+    assn = json.loads(result.assignments)
+
+    self.render("planbook.html", assignments=assn, user = database.User.get_by_id(usr) if usr else None)
+
   def post(self):
     # Get the JSON from the POST request
     assn = {}
     for i in self.request.arguments():
       assn[i] = self.request.get(i)
 
+    logging.error(assn)
     week = assn['date']
-    usr = self.validate_cookie('user_id')
+    usr = int(self.validate_cookie('user_id'))
     action = assn['action']
 
+    #logging.error(assn)
+    logging.error(usr)
     del assn['action']
-    del assn['date']
 
     # Check if week already exists in the datastore
-    result = db.Query(Week).filter("user =", usr).filter("week =", week).fetch(limit=1)
+    result = db.Query(database.Week).filter("user =", usr).filter("week =", week).fetch(limit=1)
     
+    assn = json.dumps(assn)
     # Save to datastore
     if result:
+      logging.error("We got a hit!")
       result = result[0]
       result.assignments = assn
       result.put()
     else:
+      logging.error("We don't got a hit")
       a = database.Week(user = usr, week = week, assignments = assn)
       a.put()
 
@@ -120,7 +140,7 @@ class MainPage(Handler):
       new_date_isocal = new_date.isocalendar()
       d = week_start_date(new_date_isocal[0], new_date_isocal[1] + 1).isoformat()
 
-    result = db.Query(Week).filter("user =", usr).filter("week =", d).fetch(limit=1)
+    result = db.Query(database.Week).filter("user =", usr).filter("week =", d).fetch(limit=1)
     assigns = {}
     if result:
       result = result[0]
@@ -129,11 +149,10 @@ class MainPage(Handler):
       assigns = assignments
       assigns['date'] = d
 
-
+    assigns = json.dumps(assigns)
 
     self.response.headers['Content-Type'] = "text/json"
-    assn['date'] = sdates.current_date.isoformat()
-    self.write(json.dumps(assn))
+    self.write(json.dumps(assigns))
 
 class HomePage(Handler):
   def get(self):
