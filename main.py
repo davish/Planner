@@ -71,12 +71,19 @@ DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})')
 class MainPage(Handler):
   
   def get(self):
+    usr = int(self.validate_cookie('user_id'))
+    """
+    if usr:
+      usr = int(usr)
+    else:  
+      self.redirect('/login')
+      return """
+    
     y = datetime.now().isocalendar()[0]
     w = datetime.now().isocalendar()[1]
     starting_date = week_start_date(y,w).isoformat()
 
-    usr = int(self.validate_cookie('user_id'))
-    logging.error(usr)
+    
 
     result = db.Query(database.Week).filter("user =", usr).filter("week =", starting_date).fetch(limit=1)
 
@@ -86,7 +93,8 @@ class MainPage(Handler):
 
     else:
       result = assignments
-      assignments['date'] = starting_date # use the starting date as the date
+      result['date'] = starting_date # use the starting date as the date
+      result = json.dumps(result)
 
     assn = json.loads(result)
 
@@ -146,6 +154,7 @@ class MainPage(Handler):
     else:
       assigns = assignments
       assigns['date'] = d
+      logging.error(assigns)
       assigns = json.dumps(assigns)
 
     logging.error(assigns)
@@ -156,7 +165,7 @@ class HomePage(Handler):
   def get(self):
     self.write("Home page!")
 
-app = webapp2.WSGIApplication([('/planner', MainPage), ('/signup', user_interactions.Signup), ('/', HomePage), ('/welcome', misc.WelcomeHandler), ('/login', user_interactions.LoginHandler)],
+app = webapp2.WSGIApplication([('/planner', MainPage), ('/logout', user_interactions.LogoutHandler), ('/signup', user_interactions.Signup), ('/', HomePage), ('/welcome', misc.WelcomeHandler), ('/login', user_interactions.LoginHandler)],
                               debug=True)
 
 

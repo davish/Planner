@@ -176,8 +176,9 @@
     <script src="assets/js/bootstrap-collapse.js"></script>
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
-
-    <script type="text/javascript">
+    <script src="assets/js/planner-buttons.js"></script>
+    
+    <!--<script type="text/javascript">
       
               $('#save').click(function() {
                 
@@ -195,11 +196,14 @@
                   type: "POST",
 
                   success: function(data) {
+                    
                     $("span#date").text(data['date']);
                     //delete data['date']
-                    $("#assignments").find("textarea").each(function() {
-                      $(this).text(data[$(this).attr("id")]);
-                    });
+                      $("#assignments").find("textarea").each(function() {
+                        $(this).text("");
+                        $(this).html(data[$(this).attr("id")]);
+                      });
+                      console.log(data)
                   } 
       
                 });
@@ -220,15 +224,16 @@
                     'action': "back", 'date': $("#date").text()
                   },
                   type: "POST",
-
                   success: function(data) {
-
+                    
                     $("span#date").text(data['date']);
                     //delete data['date']
-                    $("#assignments").find("textarea").each(function() {
-                      $(this).text(data[$(this).attr("id")]);
-                    });
-                  } 
+                      $("#assignments").find("textarea").each(function() {
+                        $(this).text("");
+                        $(this).html(data[$(this).attr("id")]);
+                      });
+                      console.log(data)
+                  }
       
                 });
               });
@@ -252,15 +257,17 @@
                     
                     $("span#date").text(data['date']);
                     //delete data['date']
-                    $("#assignments").find("textarea").each(function() {
-                      $(this).text(data[$(this).attr("id")]);
-                    });
+                      $("#assignments").find("textarea").each(function() {
+                        $(this).text("");
+                        $(this).text(data[$(this).attr("id")]);
+                      });
+                      console.log(data)
                   } 
       
                 });
               });
         
-    </script>
+    </script> -->
 
   </body>
 </html>
