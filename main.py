@@ -66,7 +66,7 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})')
+DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})') # Using {4,} instead of {4,4} we eliminate any Y10K bug!
 
 class MainPage(Handler):
   
@@ -81,8 +81,6 @@ class MainPage(Handler):
     y = datetime.now().isocalendar()[0]
     w = datetime.now().isocalendar()[1]
     starting_date = week_start_date(y,w).isoformat()
-
-    
 
     result = db.Query(database.Week).filter("user =", usr).filter("week =", starting_date).fetch(limit=1)
 
@@ -167,13 +165,7 @@ class HomePage(Handler):
 app = webapp2.WSGIApplication([('/planner', MainPage), ('/logout', user_interactions.LogoutHandler), ('/signup', user_interactions.Signup), ('/', HomePage), ('/welcome', misc.WelcomeHandler), ('/login', user_interactions.LoginHandler)],
                               debug=True)
 
-
-
-
 """
-So... Have the isocalendar() of the date stored as a string in the HTML... then eval() it when it gets
-back and feed it through week_start_date again but with strdate[1] + 1... voila! You have a date obj
-one week ahead! or... 
 
 you can just make a string template.... and use a regex!
 """

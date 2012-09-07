@@ -94,19 +94,23 @@ class LoginHandler(Handler):
   def get(self):
     self.render("login.html")
   def post(self):
-    logging.error("LOGIN_POST")
     have_error = False
     username = self.request.get('username')
     password = self.request.get('password')
-    logging.error("USERNAME IS %s" % username)
+
+
     result = db.Query(User).filter("username =", username).fetch(limit=1)
+    
     if result:
-      if valid_pw(username, password, result[0].password):
-        userid_cookie = make_secure_val(str(result[0].key().id()))
-        self.response.headers.add_header('Set-Cookie', 'user_id=%s' % userid_cookie)
-        self.redirect('/planner')
+        if valid_pw(username, password, result[0].password):
+            userid_cookie = make_secure_val(str(result[0].key().id()))
+            self.response.headers.add_header('Set-Cookie', 'user_id=%s' % userid_cookie)
+            self.redirect('/planner')
+          
+        else:
+            self.render("login.html", username = username, error_correct = "Sorry, but the username and password you entered do not match.")
     else:
-        self.render("login.html")
+        self.render("login.html", error_correct = "Sorry, but the username you entered does not exist.")
 class LogoutHandler(Handler):
     def get(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=')
