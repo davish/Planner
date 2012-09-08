@@ -15,6 +15,7 @@ $(document).ready(function() {
 
       success: function(data) {      
         $("span#date").text(data['date']);
+        $("span#bottom_date").text(data['date']);
         //delete data['date']
         $("#assignments").find("textarea").each(function() {
           $(this).text("");
@@ -41,6 +42,7 @@ $(document).ready(function() {
       type: "POST",
       success: function(data) {                
         $("span#date").text(data['date']);
+        $("span#bottom_date").text(data['date']);
         //delete data['date']
         $("#assignments").find("textarea").each(function() {
           $(this).text("");
@@ -67,6 +69,8 @@ $(document).ready(function() {
       type: "POST",
       success: function(data) {            
         $("span#date").text(data['date']);
+        $("span#bottom_date").text(data['date']);
+
         //delete data['date']
         $("#assignments").find("textarea").each(function() {
           $(this).text("");
