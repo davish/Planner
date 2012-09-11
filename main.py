@@ -66,7 +66,7 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})') # Using {4,} instead of {4,4} we eliminate any Y10K bug!
+DATE_REGEX = re.compile(r'(\d{4,})-(\d{2,2})-(\d{2,2})') # Using {4,} instead of {4,4} we eliminate the Y10K bug!
 
 class MainPage(Handler):
   
@@ -160,9 +160,13 @@ class MainPage(Handler):
 
 class HomePage(Handler):
   def get(self):
-    self.write("Home page!")
+    self.redirect('/planner')
 
-app = webapp2.WSGIApplication([('/planner', MainPage), ('/logout', user_interactions.LogoutHandler), ('/signup', user_interactions.Signup), ('/', HomePage), ('/welcome', misc.WelcomeHandler), ('/login', user_interactions.LoginHandler)],
+app = webapp2.WSGIApplication([('/planner', MainPage), 
+                              ('/logout', user_interactions.LogoutHandler), 
+                              ('/signup', user_interactions.Signup), 
+                              ('/', HomePage), ('/welcome', misc.WelcomeHandler), 
+                              ('/login', user_interactions.LoginHandler)],
                               debug=True)
 
 """
