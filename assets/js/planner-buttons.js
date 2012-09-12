@@ -92,7 +92,7 @@ $(document).ready(function() {
             'mondaylang': $("textarea#mondaylang").val(), 'tuesdaylang': $("textarea#tuesdaylang").val(), 'wednesdaylang': $("textarea#wednesdaylang").val(), 'thursdaylang': $("textarea#thursdaylang").val(), 'fridaylang': $("textarea#fridaylang").val(), 
             'mondayother': $("textarea#mondayother").val(), 'tuesdayother': $("textarea#tuesdayother").val(), 'wednesdayother': $("textarea#wednesdayother").val(), 'thursdayother': $("textarea#thursdayother").val(), 'fridayother': $("textarea#fridayother").val(), 
             'notes': $("textarea#notes").val(),
-            'action': "next", 'date': $("#date").text()
+            'action': "save", 'date': $("#date").text()
       },
       type: "POST",
       success: function(data) {            
