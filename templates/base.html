@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Credits to:
-ARYAV PAL! -->
+
   <head>
     <meta charset="utf-8">
     <title>Planbook</title>
@@ -38,13 +37,8 @@ ARYAV PAL! -->
           <div class="nav-collapse">
             <ul class="nav"><li><a href="/">Home</a></li></ul>
             <ul class="nav pull-right">
-              {% if user %}
-              <li><a href="#">{{user.username}}</a></li>
-              <li><a href="#" id="logout">Logout</a></li>
-              {% else %}
               <li><a href="/login">Login</a></li>
               <li><a href="/signup">Sign Up</a></li>
-              {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
         </div>
