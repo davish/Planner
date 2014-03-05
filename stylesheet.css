@@ -1,0 +1,33 @@
+.period {
+  width:150;
+  height:70;
+  background-color: #66CD00;
+  border-radius: 7px;
+}
+.day {
+  width: 150;
+  margin: auto;
+  font-family: monospace;
+}
+
+.letter {
+  font-family: monospace;
+  color: #7E7F7E;
+  font-size: 20px;
+  padding-left: 10px;
+  padding-top: 25px;
+}
+
+.schedule {
+  padding: 25px;
+  padding-left: 100px;
+  padding-right: auto;
+  float: left;
+}
+.sidebar {
+  float: right;
+  padding-top: 50px;
+  padding-right: 50px;
+  border: 1px solid black;
+}
+
