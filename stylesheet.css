@@ -1,4 +1,7 @@
+/* Element Divs */
+
 .period {
+  /* Grid elements */
   width:150;
   height:70;
   background-color: #66CD00;
@@ -10,24 +13,69 @@
   font-family: monospace;
 }
 
+
+/* Divs within the boxes*/
 .letter {
-  font-family: monospace;
   color: #7E7F7E;
+
+  font-family: monospace;
   font-size: 20px;
+
   padding-left: 10px;
   padding-top: 25px;
+  padding-right:120px;
+  padding-bottom: 50px;
+
+  width: 20px;
 }
 
+.close {
+  font-family: monospace;
+  font-size: 15px;
+
+  padding-left: 185px;
+  padding-top: 5px;
+}
+
+/* Container Divs */
 .schedule {
   padding: 25px;
   padding-left: 100px;
-  padding-right: auto;
+  /*padding-right: auto;*/
   float: left;
 }
 .sidebar {
   float: right;
-  padding-top: 50px;
-  padding-right: 50px;
+  margin-top: 45px;
+  margin-right: 100;
+
+  
+  /*padding-right: 100px;*/
+  /*padding-left: 50px;*/
+
+  height: 587px;
+  width: 200;
+
+
   border: 1px solid black;
+  border-radius: 7px;
+}
+
+
+/* Element Styling */
+textarea {
+  width: 150px;
+  height: 150px;
+  margin-left: 15px;
+
+  /* Make the TA itself invisible */
+  background-color: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+a {
+  text-decoration: none;
 }
 
