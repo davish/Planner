@@ -1,6 +1,6 @@
 /* 
 
-    (c) Davis Haupt licensed under MPL license
+    (c) Davis Haupt licensed under MIT license
 
 */
 
@@ -137,17 +137,19 @@ function main() {
 }
 
 function responsiveUpdate() {
-    var pWidth = ($(window).width() - 500) / 5;
+    var pWidth = ($(window).width() - 500) / 5; // width of one square
 
     if (pWidth < 70) // if the window's getting really small
         pWidth = 70;
-    else if (pWidth > 140)
+    else if (pWidth > 140) // don't want it too big
         pWidth = 140;
-    
-    $(".period").width(pWidth); // Actual square
+
+    // adjust the dimensions
+    $(".period").width(pWidth); 
     $(".sidebar").width(pWidth * 1.4);    
     $(".letter").css({"width": pWidth, "height": 70 - 25});
     $(".close").css({"padding-left": pWidth + 15});
+    
     $("#" + boxClicked).width(pWidth + 50);
 }
 
