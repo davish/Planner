@@ -69,8 +69,16 @@ var boxClicked = "";
 
 var sidebarDay = getNextSchoolDay(new Date());
 
+var lastWidth = 0;
+
 function main() {
-    $(".sidebar").html("<h3>" + getDayName(getNextSchoolDay(new Date())) + "</h3>");    
+    /* Initialization */
+
+    $(".sidebar").html("<h3>" + getDayName(getNextSchoolDay(new Date())) + "</h3>");
+
+
+    /* Responsive Elements */
+    responsiveUpdate();
 
     $(".period").each(function(index, value) {
         var id = value.id.split('');
@@ -81,12 +89,15 @@ function main() {
         $(identifier).css("background-color", colors[schedule[id[0]][id[1]]]);
     });
 
+
+    /* Event Listeners */
+    // opening/closing textareas
     $(".letter").click(function() {
         periodID = $(this).attr("id");
         if (boxClicked == "") {
             boxClicked = periodID;
+            $(this).parent().animate({"width": $(".period").width() + 30, "height": 200});
 
-            $(this).parent().animate({"width": 200, "height": 200});
             $(this).slideUp();
             $(this).parent().children(".close").slideDown();
             $(this).parent().children("textarea").slideDown();
@@ -100,7 +111,7 @@ function main() {
             boxClicked = "";
 
             $(this).parent().slideUp();
-            $(this).parent().parent().animate({"width": 150, "height": 70});
+            $(this).parent().parent().animate({"width": $(".period").width(), "height": 70});
             $(this).parent().parent().children("textarea").slideUp();
             $(this).parent().parent().children(".letter").slideDown();
 
@@ -108,12 +119,32 @@ function main() {
         }
     });
 
+    // Selecting day for the sidebar
     $(".day").click(function() {
         dayNum = parseInt($(this).attr("id").split('')[1]);
         sidebarDay = dayNum;
         checkForHW(dayNum);
     });
+
+    // RESPONSIVE DESIGN
+    $(window).resize(responsiveUpdate);
 }
+
+function responsiveUpdate() {
+    var pWidth = ($(window).width() - 500) / 5;
+
+    if (pWidth < 70) // if the window's getting really small
+        pWidth = 70;
+    else if (pWidth > 140)
+        pWidth = 140;
+    
+    $(".period").width(pWidth); // Actual square
+    $(".sidebar").width(pWidth * 1.4);    
+    $(".letter").css({"width": pWidth, "height": 70 - 25});
+    $(".close").css({"padding-left": pWidth + 15});
+    $("#" + boxClicked).width(pWidth + 50);
+}
+
 
 function checkForHW(day) {
     $(".sidebar").html("<h3>" + getDayName(day) + "</h3>"); // Heading
