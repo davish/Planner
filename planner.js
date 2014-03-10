@@ -67,6 +67,8 @@ var schedule = {
                 }
 var boxClicked = "";
 
+var sidebarDay = getNextSchoolDay(new Date());
+
 function main() {
     $(".sidebar").html("<h3>" + getDayName(getNextSchoolDay(new Date())) + "</h3>");    
 
@@ -79,7 +81,7 @@ function main() {
         $(identifier).css("background-color", colors[schedule[id[0]][id[1]]]);
     });
 
-    $(".letter").click(function(e) {
+    $(".letter").click(function() {
         periodID = $(this).attr("id");
         if (boxClicked == "") {
             boxClicked = periodID;
@@ -102,27 +104,33 @@ function main() {
             $(this).parent().parent().children("textarea").slideUp();
             $(this).parent().parent().children(".letter").slideDown();
 
-            checkForHW(getNextSchoolDay(new Date()));
+            checkForHW(sidebarDay);
         }
+    });
+
+    $(".day").click(function() {
+        dayNum = parseInt($(this).attr("id").split('')[1]);
+        sidebarDay = dayNum;
+        checkForHW(dayNum);
     });
 }
 
 function checkForHW(day) {
-    $(".sidebar").html("<h3>" + getDayName(day) + "</h3> <hr>");
+    $(".sidebar").html("<h3>" + getDayName(day) + "</h3>"); // Heading
     for (var i = 1; i <= 8; i++ ) {
-        var cellID = String(day) + String(i)
-        var TAval = $("#" + cellID).children("textarea").val();
-        if (TAval != ""){
-            var assignments = TAval.split('\n');
-            var toDo = "";
-            for (var j = 0; j < assignments.length; j++) {
-                if (assignments[j] != "") {
-                    toDo = toDo + "<li>" + assignments[j] + "</li>";
+        var TAval = $("#" + String(day) + String(i)).children("textarea").val();
+        if (TAval != "") {
+            var lines = TAval.split('\n');
+            var toDo = ""; // Lines to go onto the todo list
+            for (var j = 0; j < lines.length; j++) {
+                if (lines[j] != "") {
+                    toDo = toDo + "<li>" + lines[j] + "</li>";
                 }
             }
 
-            $(".sidebar").html($(".sidebar").html() + "<b>" + getClass(cellID) + " Period:</b> <ul>" + toDo + "</ul> <hr>");
+            $(".sidebar").html($(".sidebar").html() + "<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>");
         }
+        
     }
 }
 
@@ -132,12 +140,11 @@ function getClass(s) {
 }
 
 function getNextSchoolDay(date) {
-    console.log(date.getDay());
     var day = 0;
     if (date.getDay() > 0 && date.getDay() < 5)  // getDate() returns int 0-6 (sunday-saturday)
         day = date.getDay() + 1;
-    else 
-        day = 1;
+    else // if it's a weekend
+        day = 1; // Monday's the next schoolday
     return day;
 }
 
@@ -145,29 +152,20 @@ function getDayName(d) {
     var s = ""
     switch(d) {
         case 0:
-            s = "Sunday";
-            break;
+            return "Sunday";
         case 1:
-            s = "Monday";
-            break;
+            return "Monday";
         case 2:
-            s = "Tuesday";
-            break;
+            return "Tuesday";
         case 3:
-            s = "Wednesday";
-            break;
+            return "Wednesday";
         case 4:
-            s = "Thursday";
-            break;
+            return "Thursday";
         case 5:
-            s = "Friday";
-            break;
+            return "Friday";
         case 6:
-            s = "Saturday";
-            break;
+            return "Saturday";
         default:
-            s = "You Suck";
-            break;
+            return "You Suck";
     }
-    return s;
 }
