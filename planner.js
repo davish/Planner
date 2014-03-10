@@ -1,3 +1,9 @@
+/* 
+
+    (c) Davis Haupt licensed under MPL license
+
+*/
+
 var colors = {
                 "A": "#00ff00",
                 "B": "#ff0080",
