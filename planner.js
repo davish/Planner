@@ -15,7 +15,8 @@ var colors = {
                 "H": "#5d5dfa",
                 "I": "#12e29d",
                 "J": "red",
-                "K": "a7a7a7"
+                "K": "a7a7a7",
+                "Z": "pink"
 
               }
 
@@ -28,7 +29,8 @@ var schedule = {
                         "5": "I",
                         "6": "K",
                         "7": "H",
-                        "8": "G"
+                        "8": "G",
+                        "9": "Z"
                     },
                     "2": {
                         "1": "C",
@@ -38,7 +40,8 @@ var schedule = {
                         "5": "I",
                         "6": "K",
                         "7": "B",
-                        "8": "A"
+                        "8": "A",
+                        "9": "Z"
                     },
                     "3": {
                         "1": "E",
@@ -48,7 +51,8 @@ var schedule = {
                         "5": "J",
                         "6": "K",
                         "7": "D",
-                        "8": "C"
+                        "8": "C",
+                        "9": "Z"
                     },
                     "4": {
                         "1": "B",
@@ -58,7 +62,8 @@ var schedule = {
                         "5": "I",
                         "6": "K",
                         "7": "E",
-                        "8": "F"
+                        "8": "F",
+                        "9": "Z"
                     },
                     "5": {
                         "1": "E",
@@ -68,7 +73,8 @@ var schedule = {
                         "5": "I",
                         "6": "K",
                         "7": "G",
-                        "8": "H"
+                        "8": "H",
+                        "9": "Z"
                     }
                 }
 var boxClicked = "";
@@ -156,7 +162,7 @@ function responsiveUpdate() {
 
 function checkForHW(day) {
     $(".sidebar").html("<h3>" + getDayName(day) + "</h3>"); // Heading
-    for (var i = 1; i <= 8; i++ ) {
+    for (var i = 1; i <= 9; i++ ) {
         var TAval = $("#" + String(day) + String(i)).children("textarea").val();
         if (TAval != "") {
             var lines = TAval.split('\n');
