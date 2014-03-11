@@ -4,79 +4,6 @@
 
 */
 
-var colors = {
-                "A": "#00ff00",
-                "B": "#ff0080",
-                "C": "#029af5",
-                "D": "#d75000",
-                "E": "#ffd500",
-                "F": "#00ffd5",
-                "G": "#bc33ff",
-                "H": "#5d5dfa",
-                "I": "#12e29d",
-                "J": "red",
-                "K": "a7a7a7",
-                "Z": "pink"
-
-              }
-
-var schedule = {
-                    "1": {
-                        "1": "B",
-                        "2": "A",
-                        "3": "E",
-                        "4": "F",
-                        "5": "I",
-                        "6": "K",
-                        "7": "H",
-                        "8": "G",
-                        "9": "Z"
-                    },
-                    "2": {
-                        "1": "C",
-                        "2": "D",
-                        "3": "H",
-                        "4": "G",
-                        "5": "I",
-                        "6": "K",
-                        "7": "B",
-                        "8": "A",
-                        "9": "Z"
-                    },
-                    "3": {
-                        "1": "E",
-                        "2": "F",
-                        "3": "H",
-                        "4": "G",
-                        "5": "J",
-                        "6": "K",
-                        "7": "D",
-                        "8": "C",
-                        "9": "Z"
-                    },
-                    "4": {
-                        "1": "B",
-                        "2": "A",
-                        "3": "D",
-                        "4": "C",
-                        "5": "I",
-                        "6": "K",
-                        "7": "E",
-                        "8": "F",
-                        "9": "Z"
-                    },
-                    "5": {
-                        "1": "E",
-                        "2": "F",
-                        "3": "A",
-                        "4": "B",
-                        "5": "I",
-                        "6": "K",
-                        "7": "G",
-                        "8": "H",
-                        "9": "Z"
-                    }
-                }
 var boxClicked = "";
 
 var sidebarDay = getNextSchoolDay(new Date());
@@ -87,9 +14,6 @@ function main() {
     /* Initialization */
 
     $(".sidebar").html("<h3>" + getDayName(getNextSchoolDay(new Date())) + "</h3>");
-
-
-    /* Responsive Elements */
     responsiveUpdate();
 
     $(".period").each(function(index, value) {
@@ -143,7 +67,7 @@ function main() {
 }
 
 function responsiveUpdate() {
-    var pWidth = ($(window).width() - 500) / 5; // width of one square
+    var pWidth = ($(window).width() - 400) / 5; // width of one square
 
     if (pWidth < 70) // if the window's getting really small
         pWidth = 70;
@@ -163,17 +87,19 @@ function responsiveUpdate() {
 function checkForHW(day) {
     $(".sidebar").html("<h3>" + getDayName(day) + "</h3>"); // Heading
     for (var i = 1; i <= 9; i++ ) {
-        var TAval = $("#" + String(day) + String(i)).children("textarea").val();
-        if (TAval != "") {
-            var lines = TAval.split('\n');
-            var toDo = ""; // Lines to go onto the todo list
-            for (var j = 0; j < lines.length; j++) {
-                if (lines[j] != "") {
-                    toDo = toDo + "<li>" + lines[j] + "</li>";
+        if ($("#" + String(day) + String(i))) {
+            var TAval = $("#" + String(day) + String(i)).children("textarea").val();
+            if (TAval != "") {
+                var lines = TAval.split('\n');
+                var toDo = ""; // Lines to go onto the todo list
+                for (var j = 0; j < lines.length; j++) {
+                    if (lines[j] != "") {
+                        toDo = toDo + "<li>" + lines[j] + "</li>";
+                    }
                 }
-            }
 
-            $(".sidebar").html($(".sidebar").html() + "<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>");
+                $(".sidebar").html($(".sidebar").html() + "<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>");
+            }
         }
         
     }
