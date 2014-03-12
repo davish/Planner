@@ -10,15 +10,28 @@ var sidebarDay = getNextSchoolDay(new Date());
 
 var lastWidth = 0;
 
+var mode = "hw";
+var modeDesc = "Day's agenda"
+
+var monday = new Date();
+
+
 function main() {
     /* Initialization */
-
-    $(".sidebar").html("<h3>" + getDayName(getNextSchoolDay(new Date())) + "</h3>");
     responsiveUpdate();
+    
+    $(".sidebarContents").html("<h3>" + getDayName(sidebarDay) + "</h3>");
+    insertDates();
+
+
+
 
     $(".period").each(function(index, value) {
         var id = value.id.split('');
         var identifier = "#" + value.id;
+        if (id[1] == 9)
+            $(identifier).hide();
+
         $(identifier).children(".letter").html(schedule[id[0]][id[1]]);
         $(identifier).children(".close").hide();
         $(identifier).children("textarea").hide();
@@ -50,8 +63,7 @@ function main() {
             $(this).parent().parent().animate({"width": $(".period").width(), "height": 70});
             $(this).parent().parent().children("textarea").slideUp();
             $(this).parent().parent().children(".letter").slideDown();
-
-            checkForHW(sidebarDay);
+            refreshSidebar(mode, sidebarDay);
         }
     });
 
@@ -59,7 +71,16 @@ function main() {
     $(".day").click(function() {
         dayNum = parseInt($(this).attr("id").split('')[1]);
         sidebarDay = dayNum;
-        checkForHW(dayNum);
+        mode = "hw";
+        refreshSidebar(mode, dayNum);
+    });
+
+    $("#filters").change(function() {
+      mode = $(this).children("select option:selected").val();
+      modeDesc = $(this).children("select option:selected").html();
+      console.log(modeDesc);
+      refreshSidebar(mode);
+
     });
 
     // RESPONSIVE DESIGN
@@ -74,6 +95,13 @@ function responsiveUpdate() {
     else if (pWidth > 140) // don't want it too big
         pWidth = 140;
 
+    if (pWidth < 126) {
+        $(".day").each(function(index, value) {
+            $(value).html('<a href="#">' + $(value).children("a").html() + "</a>")
+        });
+    } else {
+        insertDates();
+    }
     // adjust the dimensions
     $(".period").width(pWidth); 
     $(".sidebar").width(pWidth * 1.4);    
@@ -84,8 +112,22 @@ function responsiveUpdate() {
 }
 
 
+function insertDates() {
+    $(".day").each(function(index, value) {
+        $(value).html('<a href="#">' + $(value).children("a").html() + "</a> " + (monday.getMonth()+1) + "/" + (monday.getDate()) + "/" + (monday.getYear() % 100))
+    });
+}
+
+function refreshSidebar(f, d) {
+    if (f != "hw")
+        filterAssignments(f, modeDesc);
+    else 
+        checkForHW(d);
+    
+}
+
 function checkForHW(day) {
-    $(".sidebar").html("<h3>" + getDayName(day) + "</h3>"); // Heading
+    $(".sidebarContents").html("<h3>" + getDayName(day) + "</h3>"); // Heading
     for (var i = 1; i <= 9; i++ ) {
         if ($("#" + String(day) + String(i))) {
             var TAval = $("#" + String(day) + String(i)).children("textarea").val();
@@ -94,16 +136,58 @@ function checkForHW(day) {
                 var toDo = ""; // Lines to go onto the todo list
                 for (var j = 0; j < lines.length; j++) {
                     if (lines[j] != "") {
-                        toDo = toDo + "<li>" + lines[j] + "</li>";
+                        var line = lines[j];
+                        for (var y = 0; y < keywords.length; y++) { // check for keywords 
+                            if (line.contains(keywords[y])) {
+                                line = '<span class="'+ keywords[y] +'">' + line + '</span>';
+                                break;
+                            }
+                        }
+
+                        toDo = toDo + "<li>" + line + "</li>";
                     }
                 }
-
-                $(".sidebar").html($(".sidebar").html() + "<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>");
+                $(".sidebarContents").append("<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>")
             }
         }
         
     }
 }
+
+
+function filterAssignments(f, title) {
+    f = f.toLocaleLowerCase();
+    $(".sidebarContents").html("<h3>" + title + ":</h3>"); // Heading
+
+    $(".period").each(function(index, value) {
+        var TAval = $(value).children("textarea").val();
+        var day = getDayName(parseInt(value.id.split('')[1]));
+        var lines = TAval.split('\n');
+        var toDo = ""; // Lines to go onto the todo list
+        for (var j = 0; j < lines.length; j++) {
+            if (lines[j].contains(f)) {
+                var line = lines[j];
+                line = '<span class="'+ f +'">' + line + '</span>';
+                toDo = toDo + "<li>" + line + "</li>";
+            }
+        }
+        if (toDo)
+            $(".sidebarContents").append("<hr> <b>" + getClass(value.id) + " Period on " + day + ":</b> <ul>" + toDo + "</ul>")
+    });
+
+}
+
+
+String.prototype.contains = function(w) {
+    // look for word w in string
+    a = this.split(' ');
+    for (var i = 0; i < a.length; i++) {
+        if (a[i].toLocaleLowerCase() === w.toLocaleLowerCase()) {
+            return true;
+        }
+    }
+    return false;
+};
 
 function getClass(s) {
     var class_ID = s.split('');
@@ -112,8 +196,8 @@ function getClass(s) {
 
 function getNextSchoolDay(date) {
     var day = 0;
-    if (date.getDay() > 0 && date.getDay() < 5)  // getDate() returns int 0-6 (sunday-saturday)
-        day = date.getDay() + 1;
+    if (date.getDay() > 0 && date.getDay() < 6)  // getDate() returns int 0-6 (sunday-saturday)
+        day = date.getDay();
     else // if it's a weekend
         day = 1; // Monday's the next schoolday
     return day;

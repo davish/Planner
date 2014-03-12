@@ -21,6 +21,8 @@ var colors = {
 
               }
 
+var keywords = ["test", "quiz", "due"]; // Keywords for filtering
+
 // Eventually this will be sent to the client in JSON.
 var schedule = {
                     "1": {
