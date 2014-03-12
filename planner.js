@@ -13,7 +13,7 @@ var lastWidth = 0;
 var mode = "hw";
 var modeDesc = "Day's agenda"
 
-var monday = new Date();
+var monday = new Date(2014, 2, 10); // placeholder
 
 
 function main() {
@@ -114,7 +114,10 @@ function responsiveUpdate() {
 
 function insertDates() {
     $(".day").each(function(index, value) {
-        $(value).html('<a href="#">' + $(value).children("a").html() + "</a> " + (monday.getMonth()+1) + "/" + (monday.getDate()) + "/" + (monday.getYear() % 100))
+
+        var date = new Date(monday.getYear()+1900, monday.getMonth(), monday.getDate() + index);
+        var dString = (date.getMonth()+1) + "/" + date.getDate() + "/" + (date.getYear() % 100);
+        $(value).html('<a href="#">' + $(value).children("a").html() + "</a> " + dString);
     });
 }
 
