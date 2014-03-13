@@ -15,27 +15,30 @@ var modeDesc = "Day's agenda"
 
 var monday = new Date(2014, 2, 10); // placeholder
 
+var assignments = {11: "JERGENS", 12: "", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 31: "", 32: "", 33: "", 34: "smesmesme", 35: "", 36: "", 37: "", 38: "", 39: "", 41: "", 42: "", 43: "", 44: "", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: ""};
 
 function main() {
     /* Initialization */
     responsiveUpdate();
     
     $(".sidebarContents").html("<h3>" + getDayName(sidebarDay) + "</h3>");
-    insertDates();
-
-
-
+    insertDates(monday);
+    set(assignments);
 
     $(".period").each(function(index, value) {
-        var id = value.id.split('');
-        var identifier = "#" + value.id;
-        if (id[1] == 9)
-            $(identifier).hide();
-
-        $(identifier).children(".letter").html(schedule[id[0]][id[1]]);
-        $(identifier).children(".close").hide();
-        $(identifier).children("textarea").hide();
-        $(identifier).css("background-color", colors[schedule[id[0]][id[1]]]);
+        
+        
+        if (value.id != "00")  {
+            var id = value.id.split('');
+            var identifier = "#" + value.id;
+            if (id[1] == 9)
+                $(identifier).hide();
+    
+            $(identifier).children(".letter").html(schedule[id[0]][id[1]]);
+            $(identifier).children(".close").hide();
+            $(identifier).children("textarea").hide();
+            $(identifier).css("background-color", colors[schedule[id[0]][id[1]]]);
+        }
     });
 
 
@@ -58,12 +61,15 @@ function main() {
     $(".close").children("a").click(function() {
         if (boxClicked == periodID) {
             boxClicked = "";
-
+            console.log($(".period").width());
+            
             $(this).parent().slideUp();
             $(this).parent().parent().animate({"width": $(".period").width(), "height": 70});
             $(this).parent().parent().children("textarea").slideUp();
             $(this).parent().parent().children(".letter").slideDown();
             refreshSidebar(mode, sidebarDay);
+            assignments = save();
+
         }
     });
 
@@ -90,6 +96,8 @@ function main() {
 function responsiveUpdate() {
     var pWidth = ($(window).width() - 400) / 5; // width of one square
 
+
+
     if (pWidth < 70) // if the window's getting really small
         pWidth = 70;
     else if (pWidth > 140) // don't want it too big
@@ -100,7 +108,7 @@ function responsiveUpdate() {
             $(value).html('<a href="#">' + $(value).children("a").html() + "</a>")
         });
     } else {
-        insertDates();
+        insertDates(monday);
     }
     // adjust the dimensions
     $(".period").width(pWidth); 
@@ -108,19 +116,45 @@ function responsiveUpdate() {
     $(".letter").css({"width": pWidth, "height": 70 - 25});
     $(".close").css({"padding-left": pWidth + 15});
     
-    $("#" + boxClicked).width(pWidth + 50);
+    console.log(pWidth);
+}
+
+/*
+    Save the contents of the planner to an object, for transfer to the server via JSON.
+*/
+function save() {
+    var asn = {};
+    $(".period").each(function(index, value) {
+        asn[value.id] = $(value).children("textarea").val();
+    });
+    return asn;
+
+}
+
+/* 
+    set the contents of the planner based on the given object.
+*/
+function set(o) {
+    $(".period").each(function(index, value) {
+        $(value).children("textarea").val(o[value.id]);
+    });
 }
 
 
-function insertDates() {
+/* 
+    Insert the dates next to the day of the week, when the screen is wide enough.
+*/
+function insertDates(d) {
     $(".day").each(function(index, value) {
-
-        var date = new Date(monday.getYear()+1900, monday.getMonth(), monday.getDate() + index);
+        var date = new Date(d.getYear()+1900, d.getMonth(), d.getDate() + index);
         var dString = (date.getMonth()+1) + "/" + date.getDate() + "/" + (date.getYear() % 100);
         $(value).html('<a href="#">' + $(value).children("a").html() + "</a> " + dString);
     });
 }
 
+/* 
+    update the sidebar contents, based on the current filtering mode.
+*/
 function refreshSidebar(f, d) {
     if (f != "hw")
         filterAssignments(f, modeDesc);
@@ -129,6 +163,9 @@ function refreshSidebar(f, d) {
     
 }
 
+/* 
+    Check the contents of a column and put it in the sidbar.
+*/
 function checkForHW(day) {
     $(".sidebarContents").html("<h3>" + getDayName(day) + "</h3>"); // Heading
     for (var i = 1; i <= 9; i++ ) {
@@ -157,7 +194,9 @@ function checkForHW(day) {
     }
 }
 
-
+/* 
+    Check the entire week for lines containing a specific keyword.
+*/
 function filterAssignments(f, title) {
     f = f.toLocaleLowerCase();
     $(".sidebarContents").html("<h3>" + title + ":</h3>"); // Heading
@@ -180,7 +219,9 @@ function filterAssignments(f, title) {
 
 }
 
-
+/*
+    returns true if the given word is in the string.
+*/
 String.prototype.contains = function(w) {
     // look for word w in string
     a = this.split(' ');
@@ -192,11 +233,18 @@ String.prototype.contains = function(w) {
     return false;
 };
 
+/*
+    returns the class name given the coordinates in the schedule object.
+*/
 function getClass(s) {
     var class_ID = s.split('');
     return schedule[class_ID[0]][class_ID[1]];
 }
 
+
+/* 
+    Get the next schoolday, given a date object.
+*/
 function getNextSchoolDay(date) {
     var day = 0;
     if (date.getDay() > 0 && date.getDay() < 6)  // getDate() returns int 0-6 (sunday-saturday)
@@ -206,6 +254,9 @@ function getNextSchoolDay(date) {
     return day;
 }
 
+/*
+    get the string with the name of the day given its numeric value.
+*/
 function getDayName(d) {
     var s = ""
     switch(d) {
