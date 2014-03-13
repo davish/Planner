@@ -15,15 +15,13 @@ var modeDesc = "Day's agenda"
 
 var monday = new Date(2014, 2, 10); // placeholder
 
-var assignments = {11: "JERGENS", 12: "", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 31: "", 32: "", 33: "", 34: "smesmesme", 35: "", 36: "", 37: "", 38: "", 39: "", 41: "", 42: "", 43: "", 44: "", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: ""};
+var assignments = {11: "JERGENS", 12: "test", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 31: "", 32: "", 33: "", 34: "smesmesme", 35: "test j period", 36: "", 37: "", 38: "", 39: "", 41: "", 42: "", 43: "", 44: "quiz", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: "", 00: undefined};
 
 function main() {
     /* Initialization */
-    responsiveUpdate();
-    
-    $(".sidebarContents").html("<h3>" + getDayName(sidebarDay) + "</h3>");
-    insertDates(monday);
     set(assignments);
+    refreshSidebar(mode, sidebarDay); // set the sidebar
+    responsiveUpdate(); // update the widths of everything, and insert dates.
 
     $(".period").each(function(index, value) {
         
@@ -61,7 +59,6 @@ function main() {
     $(".close").children("a").click(function() {
         if (boxClicked == periodID) {
             boxClicked = "";
-            console.log($(".period").width());
             
             $(this).parent().slideUp();
             $(this).parent().parent().animate({"width": $(".period").width(), "height": 70});
@@ -84,8 +81,7 @@ function main() {
     $("#filters").change(function() {
       mode = $(this).children("select option:selected").val();
       modeDesc = $(this).children("select option:selected").html();
-      console.log(modeDesc);
-      refreshSidebar(mode);
+      refreshSidebar(mode, sidebarDay);
 
     });
 
@@ -96,8 +92,6 @@ function main() {
 function responsiveUpdate() {
     var pWidth = ($(window).width() - 400) / 5; // width of one square
 
-
-
     if (pWidth < 70) // if the window's getting really small
         pWidth = 70;
     else if (pWidth > 140) // don't want it too big
@@ -105,7 +99,7 @@ function responsiveUpdate() {
 
     if (pWidth < 126) {
         $(".day").each(function(index, value) {
-            $(value).html('<a href="#">' + $(value).children("a").html() + "</a>")
+            $(value).html('<a href="#">' + $(value).children("a").html() + "</a>") // take off the date
         });
     } else {
         insertDates(monday);
@@ -116,7 +110,6 @@ function responsiveUpdate() {
     $(".letter").css({"width": pWidth, "height": 70 - 25});
     $(".close").css({"padding-left": pWidth + 15});
     
-    console.log(pWidth);
 }
 
 /*
@@ -125,7 +118,8 @@ function responsiveUpdate() {
 function save() {
     var asn = {};
     $(".period").each(function(index, value) {
-        asn[value.id] = $(value).children("textarea").val();
+        if (index != 0) // more of that jank fix
+            asn[value.id] = $(value).children("textarea").val();
     });
     return asn;
 
@@ -176,7 +170,8 @@ function checkForHW(day) {
                 var toDo = ""; // Lines to go onto the todo list
                 for (var j = 0; j < lines.length; j++) {
                     if (lines[j] != "") {
-                        var line = lines[j];
+                        var line = lines[j].escapeHTML();
+                        
                         for (var y = 0; y < keywords.length; y++) { // check for keywords 
                             if (line.contains(keywords[y])) {
                                 line = '<span class="'+ keywords[y] +'">' + line + '</span>';
@@ -202,19 +197,21 @@ function filterAssignments(f, title) {
     $(".sidebarContents").html("<h3>" + title + ":</h3>"); // Heading
 
     $(".period").each(function(index, value) {
-        var TAval = $(value).children("textarea").val();
-        var day = getDayName(parseInt(value.id.split('')[1]));
-        var lines = TAval.split('\n');
-        var toDo = ""; // Lines to go onto the todo list
-        for (var j = 0; j < lines.length; j++) {
-            if (lines[j].contains(f)) {
-                var line = lines[j];
-                line = '<span class="'+ f +'">' + line + '</span>';
-                toDo = toDo + "<li>" + line + "</li>";
+        if (index != 0) { // part of the jank solution
+            var TAval = $(value).children("textarea").val();
+            var day = getDayName(parseInt(value.id.split('')[0]));
+            var lines = TAval.split('\n');
+            var toDo = ""; // Lines to go onto the todo list
+            for (var j = 0; j < lines.length; j++) {
+                if (lines[j].toLocaleLowerCase().contains(f)) {
+                    var line = lines[j];
+                    line = '<span class="'+ f +'">' + line + '</span>';
+                    toDo = toDo + "<li>" + line + "</li>";
+                }
             }
+            if (toDo)
+                $(".sidebarContents").append("<hr> <b>" + getClass(value.id) + " Period on " + day + ":</b> <ul>" + toDo + "</ul>")
         }
-        if (toDo)
-            $(".sidebarContents").append("<hr> <b>" + getClass(value.id) + " Period on " + day + ":</b> <ul>" + toDo + "</ul>")
     });
 
 }
@@ -233,6 +230,10 @@ String.prototype.contains = function(w) {
     return false;
 };
 
+String.prototype.escapeHTML = function() {
+    return $('<div/>').text(this).html();
+};
+
 /*
     returns the class name given the coordinates in the schedule object.
 */
@@ -240,7 +241,6 @@ function getClass(s) {
     var class_ID = s.split('');
     return schedule[class_ID[0]][class_ID[1]];
 }
-
 
 /* 
     Get the next schoolday, given a date object.
@@ -278,3 +278,4 @@ function getDayName(d) {
             return "You Suck";
     }
 }
+
