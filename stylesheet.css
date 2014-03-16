@@ -17,14 +17,15 @@
 
 /* Divs within the boxes*/
 .letter {
-  color: #7E7F7E;
+  /*color: #7E7F7E;*/
 
   font-family: monospace;
-  font-size: 20px;
+  /*font-size: 20px;*/
 
-  margin-left: 10px;
+  margin-left: 5px;
   padding-top: 25px;
 
+  word-wrap: break-word;
   width: 20px;
 }
 
@@ -53,7 +54,6 @@ span.due {
 .schedule {
   padding: 25px;
   padding-left: 100px;
-  /*padding-right: auto;*/
   float: left;
 }
 .sidebar {
@@ -66,7 +66,6 @@ span.due {
   /*padding-left: 50px;*/
 
   height: 587px;
-  width: 200;
 
 
   border: 1px solid black;

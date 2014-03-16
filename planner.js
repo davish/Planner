@@ -24,18 +24,19 @@ function main() {
     responsiveUpdate(); // update the widths of everything, and insert dates.
 
     $(".period").each(function(index, value) {
-        
-        
-        if (value.id != "00")  {
+        if (index != 0)  { // Jank fix again.
             var id = value.id.split('');
             var identifier = "#" + value.id;
-            if (id[1] == 9)
+
+            if (id[1] == 9 && schedule[id[0]][id[1]].length == 1) {
                 $(identifier).hide();
-    
+                console.log(schedule[id[0]][id[1]]);
+            }
+
             $(identifier).children(".letter").html(schedule[id[0]][id[1]]);
             $(identifier).children(".close").hide();
             $(identifier).children("textarea").hide();
-            $(identifier).css("background-color", colors[schedule[id[0]][id[1]]]);
+            $(identifier).css("background-color", colors[colorCode[id[0]][id[1]]]);
         }
     });
 
@@ -162,29 +163,33 @@ function refreshSidebar(f, d) {
 */
 function checkForHW(day) {
     $(".sidebarContents").html("<h3>" + getDayName(day) + "</h3>"); // Heading
-    for (var i = 1; i <= 9; i++ ) {
-        if ($("#" + String(day) + String(i))) {
-            var TAval = $("#" + String(day) + String(i)).children("textarea").val();
-            if (TAval != "") {
-                var lines = TAval.split('\n');
-                var toDo = ""; // Lines to go onto the todo list
-                for (var j = 0; j < lines.length; j++) {
-                    if (lines[j] != "") {
-                        var line = lines[j].escapeHTML();
-                        
-                        for (var y = 0; y < keywords.length; y++) { // check for keywords 
-                            if (line.contains(keywords[y])) {
-                                line = '<span class="'+ keywords[y] +'">' + line + '</span>';
-                                break;
-                            }
-                        }
-
-                        toDo = toDo + "<li>" + line + "</li>";
+    for (var i = 1; i <= 9; i++ ) { // Loop through one column
+        var lines = $("#" + String(day) + String(i)).children("textarea").val().split('\n'); // split the TA into lines
+        var toDo = ""; // Lines to go onto the todo list
+        for (var j = 0; j < lines.length; j++) { // only lines with content go on the todo list
+            if (lines[j] != "") {
+                var line = lines[j].escapeHTML(); // remember to escape! don't want forms 
+                
+                for (var y = 0; y < keywords.length; y++) { // check for keywords 
+                    if (line.contains(keywords[y])) {
+                        line = '<span class="'+ keywords[y] +'">' + line + '</span>';
+                        break;
                     }
                 }
-                $(".sidebarContents").append("<hr> <b>" + getClass(String(day) + String(i)) + " Period:</b> <ul>" + toDo + "</ul>")
+
+                toDo = toDo + "<li>" + line + "</li>";
             }
         }
+
+        var title = "";
+        if (getClass(String(day) + String(i)).length <= 1)
+            title = getClass(String(day) + String(i)) + " Period";
+        else
+            title = getClass(String(day) + String(i));
+
+        if (toDo) // if there's anything actually to append
+            $(".sidebarContents").append("<hr> <b>" + title +":</b> <ul>" + toDo + "</ul>");
+        
         
     }
 }
