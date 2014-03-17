@@ -8,18 +8,14 @@ var boxClicked = "";
 
 var sidebarDay = getNextSchoolDay(new Date());
 
-var lastWidth = 0;
-
 var mode = "hw";
 var modeDesc = "Day's agenda"
 
 var monday = new Date(2014, 2, 10); // placeholder
 
-var assignments = {11: "JERGENS", 12: "test", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 31: "", 32: "", 33: "", 34: "smesmesme", 35: "test j period", 36: "", 37: "", 38: "", 39: "", 41: "", 42: "", 43: "", 44: "quiz", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: "", 00: undefined};
-
 function main() {
     /* Initialization */
-    set(assignments);
+    set(ref.assignments);
     refreshSidebar(mode, sidebarDay); // set the sidebar
     responsiveUpdate(); // update the widths of everything, and insert dates.
 
@@ -28,9 +24,9 @@ function main() {
             var id = value.id.split('');
             var identifier = "#" + value.id;
 
-            if (id[1] == 9 && getClass(value.id).length == 1) {
+            if (id[1] == 9 && getClass(value.id).length == 1)
                 $(identifier).hide();
-            }
+            
 
             $(identifier).children(".letter").html(getClass(value.id));
             $(identifier).children(".close").hide();
@@ -102,7 +98,7 @@ function responsiveUpdate() {
             $(value).html('<a href="#">' + $(value).children("a").html() + "</a>") // take off the date
         });
     } else {
-        insertDates(monday);
+        insertDates(ref.monday);
     }
     // adjust the dimensions
     $(".period").width(pWidth); 
@@ -176,7 +172,7 @@ function checkForHW(day) {
             var lookForClass = !isLab(cellID) && filterMatch[1] != "with";
 
             if (filterMatch[1] && (lookForLab || lookForClass))
-                line = '<span class="'+ ref.kwStyle[filterMatch[1]] +'">' + line + '</span>';
+                line = '<span class="'+ ref.kwStyle[filterMatch[1].toLocaleLowerCase()] +'">' + line + '</span>';
             toDo = toDo + "<li>" + line + "</li>";     
         }
         var title = "";
@@ -204,7 +200,7 @@ function filterAssignments(f, title) {
             var toDo = ""; // Lines to go onto the todo list
             for (var j = 0; j < lines.length; j++) {
                 var m = lines[j].matchOrNot(ref.keywords);
-                if (ref.kwStyle[m[1]] == f)
+                if (ref.kwStyle[m[1].toLocaleLowerCase()] == f)
                     toDo = toDo + '<li><span class="' + m[1] + '">' + lines[j] + "</span></li>"
             }
 

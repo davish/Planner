@@ -38,19 +38,19 @@
 }
 
 /* Upcoming Test */
-span.test {
+span.high {
   color: red;
 }
 /* Upcoming Quiz */
-span.quiz {
+span.mid {
   color: blue;
 }
 /* Due Date for long-term assignment */
-span.due {
+span.low {
   color: green;
 }
 /* Lab with Teacher */
-span.with {
+span.lab {
   color: orange;
 }
 
