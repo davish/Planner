@@ -88,7 +88,7 @@ var ref = {
             "1": "Algebra 2A",
             "2": "English",
             "3": "D",
-            "4": "CS1",
+            "4": "Computer Science 1",
             "5": "I",
             "6": "K",
             "7": "Parkhurst Biology",

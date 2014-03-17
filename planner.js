@@ -88,8 +88,8 @@ function main() {
 function responsiveUpdate() {
     var pWidth = ($(window).width() - 400) / 5; // width of one square
 
-    if (pWidth < 70) // if the window's getting really small
-        pWidth = 70;
+    if (pWidth < 76) // if the window's getting really small
+        pWidth = 76;
     else if (pWidth > 140) // don't want it too big
         pWidth = 140;
 
