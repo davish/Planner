@@ -28,14 +28,14 @@ function main() {
             var id = value.id.split('');
             var identifier = "#" + value.id;
 
-            if (id[1] == 9 && schedule[id[0]][id[1]].length == 1) {
+            if (id[1] == 9 && getClass(value.id).length == 1) {
                 $(identifier).hide();
             }
 
-            $(identifier).children(".letter").html(schedule[id[0]][id[1]]);
+            $(identifier).children(".letter").html(getClass(value.id));
             $(identifier).children(".close").hide();
             $(identifier).children("textarea").hide();
-            $(identifier).css("background-color", colors[colorCode[id[0]][id[1]]]);
+            $(identifier).css("background-color", ref.colors[ref.colorCode[id[0]][id[1]]]);
         }
     });
 
@@ -170,13 +170,13 @@ function checkForHW(day) {
         var toDo = ""; // Lines to go onto the todo list
         for (var j = 0; j < lines.length; j++) { // only lines with content go on the todo list
             var line = lines[j].escapeHTML(); // remember to escape! don't want forms 
-            var filterMatch = line.matchOrNot(keywords);
+            var filterMatch = line.matchOrNot(ref.keywords);
 
             var lookForLab = isLab(cellID) && filterMatch[1]=="with";
             var lookForClass = !isLab(cellID) && filterMatch[1] != "with";
 
             if (filterMatch[1] && (lookForLab || lookForClass))
-                line = '<span class="'+ filterMatch[1] +'">' + line + '</span>';
+                line = '<span class="'+ ref.kwStyle[filterMatch[1]] +'">' + line + '</span>';
             toDo = toDo + "<li>" + line + "</li>";     
         }
         var title = "";
@@ -203,8 +203,8 @@ function filterAssignments(f, title) {
             var lines = $(value).children("textarea").val().matchOrNot(/[^\n]+/);
             var toDo = ""; // Lines to go onto the todo list
             for (var j = 0; j < lines.length; j++) {
-                var m = lines[j].matchOrNot(keywords);
-                if (m[1] == f)
+                var m = lines[j].matchOrNot(ref.keywords);
+                if (ref.kwStyle[m[1]] == f)
                     toDo = toDo + '<li><span class="' + m[1] + '">' + lines[j] + "</span></li>"
             }
 
@@ -243,7 +243,7 @@ function isLab(c) {
 */
 function getClass(s) {
     var class_ID = s.split('');
-    return schedule[class_ID[0]][class_ID[1]];
+    return ref.schedule[class_ID[0]][class_ID[1]];
 }
 
 /* 
