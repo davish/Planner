@@ -4,7 +4,7 @@
 
     For long JS objects that I don't want mucking up the actual code.
 
-    Eventually, this whole file won't actually be static. The schedule and color scheme change between users,
+    Eventually, this whole file won't be static. The schedule and color scheme change between users,
     and keywords might too. the "colorCode" object changes week-to-week.
 */
 
@@ -24,9 +24,10 @@ var colors = {
 
               }
 
-var keywords = ["test", "quiz", "due"]; // Keywords for filtering
+var keywords = /(test|quiz|due|with)/i;
 
-// Eventually will be sent over JSON
+
+
 var schedule = {
                     "1": {
                         "1": "Algebra 2A",
@@ -85,7 +86,6 @@ var schedule = {
                     }
                 }
 
-// Eventually this will be sent to the client in JSON, since .
 var colorCode = {
                     "1": {
                         "1": "B",

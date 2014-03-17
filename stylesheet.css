@@ -37,18 +37,23 @@
   padding-top: 5px;
 }
 
-
+/* Upcoming Test */
 span.test {
   color: red;
 }
-
+/* Upcoming Quiz */
 span.quiz {
   color: blue;
 }
-
+/* Due Date for long-term assignment */
 span.due {
   color: green;
 }
+/* Lab with Teacher */
+span.with {
+  color: orange;
+}
+
 
 /* Container Divs */
 .schedule {
