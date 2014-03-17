@@ -1,7 +1,7 @@
 /* 
  ************************************
  *
- * Extending existing classes
+ * Extentions of existing classes
  *
  ************************************
 */
@@ -15,13 +15,14 @@ String.prototype.matchOrNot = function(r) {
 }
 
 String.prototype.escapeHTML = function() {
-    
     return $('<div/>').text(this).html();
 };
 
 
 $.fn.slide = function(dist, t) {
     var element = this[0];
+    var p = $(element).css("position");
+    $(element).css("position", "relative");
     if (!t)
         t = 500
     $(element).animate({
@@ -29,4 +30,5 @@ $.fn.slide = function(dist, t) {
     }, t, function() {
         $(element).animate({left: 0}, 0);
     });
+    $(element).css("position", p);
 }

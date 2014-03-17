@@ -25,7 +25,6 @@ $(document).ready(function() {
             if (id[1] == 9 && getClass(value.id).length == 1)
                 $(identifier).hide();
             
-
             $(identifier).children(".letter").html(getClass(value.id));
             $(identifier).children(".close").hide();
             $(identifier).children("textarea").hide();
