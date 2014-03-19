@@ -1,3 +1,4 @@
+
 /* 
  ************************************
  *
@@ -37,6 +38,8 @@ function responsiveUpdate() {
     $(".period").width(pWidth); 
     $(".sidebar").width(pWidth * 1.4);    
     $(".letter").css({"width": pWidth, "height": 70 - 25});
-    $(".close").css({"padding-left": pWidth + 15});
     
+    $("#" + boxClicked).width(pWidth + 30);
+    $(".close").css({"padding-left": pWidth + 15});
+
 }
