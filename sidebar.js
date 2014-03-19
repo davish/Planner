@@ -12,10 +12,12 @@
     update the sidebar contents, based on the current filtering mode.
 */
 function refreshSidebar(f, d) {
-    if (f != "hw")
-        filterAssignments(f, modeDesc);
-    else 
+    if (f == "hw")
         checkForHW(d);
+    else if (f == "currentEvents")
+        checkEvents();
+    else 
+        filterAssignments(f, modeDesc);
     
 }
 
@@ -35,7 +37,7 @@ function checkForHW(day) {
             var filterMatch = line.matchOrNot(ref.keywords);
 
             var lookForLab = isLab(cellID) && filterMatch[1]=="with";
-            var lookForClass = !isLab(cellID) && filterMatch[1] != "with";
+            var lookForClass = filterMatch[1] != "with";
 
             if (filterMatch[1] && (lookForLab || lookForClass))
                 line = '<span class="'+ ref.kwStyle[filterMatch[1].toLocaleLowerCase()] +'">' + line + '</span>';
@@ -66,8 +68,10 @@ function filterAssignments(f, title) {
             var toDo = ""; // Lines to go onto the todo list
             for (var j = 0; j < lines.length; j++) {
                 var m = lines[j].matchOrNot(ref.keywords);
-                if (ref.kwStyle[m[1].toLocaleLowerCase()] == f)
-                    toDo = toDo + '<li><span class="' + m[1] + '">' + lines[j] + "</span></li>"
+                if (m[1]) {
+                    if (ref.kwStyle[m[1].toLocaleLowerCase()] == f)
+                        toDo = toDo + '<li><span class="' + ref.kwStyle[m[1].toLocaleLowerCase()] + '">' + lines[j] + "</span></li>";
+                }
             }
 
             var title = "";
@@ -81,4 +85,22 @@ function filterAssignments(f, title) {
         }
     });
 
+}
+
+/* 
+    Check for current events from the array in the ref object for this week.
+*/
+function checkEvents() {
+    $(".sidebarContents").html("<h3>" + "Upcoming Events" + ":</h3>"); // Heading
+    for (var i = 0; i < ref.currentEvents.length; i++) {
+        var daysEvents = ref.currentEvents[i];
+        toDo = "";
+        if (daysEvents){
+            for (var j = 0; j < daysEvents.length; j++) {
+                toDo = toDo + '<li>' + daysEvents[j] + '</li>'
+            }
+        }
+        if (toDo)
+            $(".sidebarContents").append("<hr><b>" + getDayName(i+1) + ":</b> <ul>" + toDo + "</ul>");
+    }
 }
