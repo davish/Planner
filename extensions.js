@@ -19,7 +19,7 @@ String.prototype.escapeHTML = function() {
 };
 
 
-$.fn.slide = function(dist, t) {
+$.fn.slide = function(dist, t, c) {
     var element = this[0];
     var p = $(element).css("position");
     $(element).css("position", "relative");
@@ -28,7 +28,10 @@ $.fn.slide = function(dist, t) {
     $(element).animate({
         left: "+=" + dist
     }, t, function() {
-        $(element).animate({left: 0}, 0);
+        $(element).css({left: -dist});
+        $(element).animate({left: 0}, t);
+        if (c)
+            c();
     });
     $(element).css("position", p);
 }
