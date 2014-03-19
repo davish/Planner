@@ -37,6 +37,20 @@
   padding-top: 5px;
 }
 
+#prev {
+  padding-top: 305px;
+  float: left;
+}
+
+#next {
+  padding-top: 305px;
+  float: left;
+}
+
+
+
+
+
 /* Upcoming Test */
 span.high {
   color: red;
@@ -56,9 +70,15 @@ span.lab {
 
 
 /* Container Divs */
+
+.planner {
+  float: left;
+  position: relative;
+
+}
+
 .schedule {
   padding: 25px;
-  padding-left: 100px;
   float: left;
   position: relative;
 }
@@ -74,8 +94,14 @@ span.lab {
   height: 587px;
 
 
+  
   border: 1px solid black;
   border-radius: 7px;
+}
+
+.sidebarContents {
+  overflow-y: auto;
+  height: 565px;
 }
 
 #filters {

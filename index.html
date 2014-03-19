@@ -17,11 +17,14 @@
     <title> Planner </title>
   </head>
   <body>
+
     <div>
       <!-- My jank solution to the resizing glitch, where the base size of $(".period").width() is
       the size of the first occurance of $(".period"). Now, the '00' period is hidden and just chills out. -->
       <div class="period" id="00"></div> 
-      <div class="container">
+
+      <div class="planner">
+        <a href="#" id="prev" class="navBtn"> &lt; </a>
         <table class="schedule" border="0">
           <tr>
             <td> <div class="day" id="d1"> <a href="#">Monday</a></div></td>
@@ -93,18 +96,20 @@
             <td><div class="period" id="59"><div class="close"><a href="#">X</a></div><div class="letter"></div><textarea></textarea></div></td> 
           </tr>
         </table>
-        <div class="sidebar">
+        <a href="#" id="next" class="navBtn"> &gt; </a>
+      </div>
+      <div class="sidebar">
           <select name="filters" id="filters">
             <option value="hw">Day's agenda</option>
-            <option value="test">Tests this week</option>
-            <option value="quiz">Quizzes this week</option>
-            <option value="due">Long-term assignments due this week</option>
-            <option value="with">Labs with teachers</option>
+            <option value="high">Tests</option>
+            <option value="mid">Quizzes</option>
+            <option value="low">Long-term assignments</option>
+            <option value="lab">Labs with teachers</option>
+            <option value="currentEvents">Current Events</option>
           </select>
           <div class="sidebarContents">
           </div>
         </div>
-      </div>
     </div>
   </body>
 </html>

@@ -12,7 +12,17 @@
 */
 
 var ref = {
+    req: "",
+
     monday: new Date(2014, 2, 10),
+
+    lastWeek: {
+        11: "SHEA BUTTER", 12: "Essay due", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 
+        21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 
+        31: "", 32: "", 33: "", 34: "smesmesme", 35: "test j period", 36: "", 37: "", 38: "", 39: "", 
+        41: "", 42: "", 43: "", 44: "quiz", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 
+        51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: "", 00: undefined
+    },
 
     assignments: {
         11: "JERGENS", 12: "test", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 
@@ -21,6 +31,17 @@ var ref = {
         41: "", 42: "", 43: "", 44: "quiz", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 
         51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: "", 00: undefined
     },
+
+    nextWeek: {
+        11: "SMEE", 12: "quiz", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 
+        21: "", 22: "side lard: jiggling!", 23: "", 24: "", 25: "", 26: "", 27: "", 28: "", 29: "", 
+        31: "", 32: "", 33: "", 34: "smesmesme", 35: "test j period", 36: "", 37: "", 38: "", 39: "", 
+        41: "", 42: "", 43: "", 44: "quiz", 45: "mass decreasing!", 46: "", 47: "", 48: "", 49: "", 
+        51: "", 52: "", 53: "", 54: "", 55: "", 56: "", 57: "", 58: "", 59: "", 00: undefined
+    },
+
+
+    currentEvents: [["7th and 8th grade Lice checkups"],["Side lard tests for everyone!"],[],["Rutgers Model UN conference", "Princeton Debate Tournament"],["Rutgers Model UN conference", "Princeton Debate Tournament", "Homecoming"], ["Rutgers Model UN conference"], []],
 
     colors: {
         "A": "#00ff00",
