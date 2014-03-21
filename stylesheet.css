@@ -71,29 +71,24 @@ span.lab {
 
 /* Container Divs */
 
+/* Schedule, with buttons */
 .planner {
   float: left;
   position: relative;
 
 }
-
+/* Just the Schedule */
 .schedule {
   padding: 25px;
   float: left;
   position: relative;
 }
 .sidebar {
-  float: right;
+  float: left;
   margin-top: 45px;
-  margin-right: 100;
-
-  
-  /*padding-right: 100px;*/
-  /*padding-left: 50px;*/
+  margin-left: 50px;
 
   height: 587px;
-
-
   
   border: 1px solid black;
   border-radius: 7px;
