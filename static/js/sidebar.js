@@ -34,8 +34,8 @@ function checkForHW(day) {
         var toDo = ""; // Lines to go onto the todo list
         for (var j = 0; j < lines.length; j++) { // only lines with content go on the todo list
             var line = lines[j].escapeHTML(); // remember to escape! don't want forms 
-            var filterMatch = line.matchOrNot(ref.keywords);
-
+            var filterMatch = line.matchOrNot(new RegExp(ref.keywords, "i"));
+            console.log(ref.keywords);
             var lookForLab = isLab(cellID) && filterMatch[1]=="with";
             var lookForClass = filterMatch[1] != "with";
 
