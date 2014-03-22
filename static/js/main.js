@@ -11,14 +11,16 @@ var sidebarDay = getNextSchoolDay(new Date());
 var mode = "hw";
 var modeDesc = "Day's agenda"
 
+
+
+var ref = {};
+
 $(document).ready(function() {
     /* Initialization */
 
     ref.req = "sync"; // Not uploading anything, just getting the info to start the page.
-    refresh();
-
-    $(".period").each(function(index, value) {
-        if (index != 0)  { // Jank fix again.
+    refresh(function() {
+        $(".period").each(function(index, value) {
             var id = value.id.split('');
             var identifier = "#" + value.id;
 
@@ -31,8 +33,10 @@ $(document).ready(function() {
             // Hide elements that are only shown when clicked.
             $(identifier).children(".close").hide();
             $(identifier).children("textarea").hide();
-        }
+        });
     });
+
+
 
 
     /* Event Listeners */
@@ -41,7 +45,7 @@ $(document).ready(function() {
         periodID = $(this).attr("id");
         if (boxClicked == "") { // if no boxes are currently open
             boxClicked = periodID;
-            $(this).parent().animate({"width": $(".period").width() + 30, "height": 200}); // enlarge the box
+            $(this).parent().animate({"width": pWidth + 30, "height": 200}); // enlarge the box
 
             $(this).slideUp(); // hide the title
             $(this).parent().children(".close").slideDown();
@@ -58,7 +62,7 @@ $(document).ready(function() {
             
             // climbing up and down the tree to move things around.
             $(this).parent().slideUp();
-            $(this).parent().parent().animate({"width": $(".period").width(), "height": 70});
+            $(this).parent().parent().animate({"width": pWidth, "height": 70});
             $(this).parent().parent().children("textarea").slideUp();
             $(this).parent().parent().children(".letter").slideDown();
             refreshSidebar(mode, sidebarDay);
@@ -110,11 +114,9 @@ $(document).ready(function() {
 function save() {
     var asn = {};
     $(".period").each(function(index, value) {
-        if (index != 0) // more of that jank fix
-            asn[value.id] = $(value).children("textarea").val();
+        asn[value.id] = $(value).children("textarea").val();
     });
     return asn;
-
 }
 
 /* 
@@ -126,27 +128,23 @@ function set(o) {
     });
 }
 
-function refresh() {
-    getRef();
-    set(ref.assignments);
-    refreshSidebar(mode, sidebarDay);
-    responsiveUpdate();
+function refresh(c) {
+    getRef(function() {
+        set(ref.assignments);
+        refreshSidebar(mode, sidebarDay);
+        responsiveUpdate();
+        if (c)
+            c();
+    });
 }
 
-function getRef() {
+function getRef(c) {
     // eventually, will send ref to server and get an updated object in return.
-    var dir = 0;
-    if (ref.req=="prev") {
-        dir = -1;
-        ref.assignments = ref.lastWeek;
-    }
-    else if (ref.req=="save" || ref.req=="sync") {
-        dir = 0;
-    }
-    else if (ref.req=="next") {
-        dir = 1;
-        ref.assignments = ref.nextWeek;
-    }
+    $.post("/planner", ref, function(data) {
+        console.log(data);
+        ref = data;
+        if (c)
+            c();
+    });
 
-    ref.monday = new Date(ref.monday.getYear()+1900, ref.monday.getMonth(), ref.monday.getDate() + 7*dir);
 }

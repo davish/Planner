@@ -7,11 +7,12 @@
  ************************************
 */
 
-
+var pWidth = ($(window).width() - 400) / 5;
 /* 
     Insert the dates next to the day of the week, when the screen is wide enough.
 */
 function insertDates(d) {
+    d = new Date(d);
     $(".day").each(function(index, value) {
         var date = new Date(d.getYear()+1900, d.getMonth(), d.getDate() + index);
         var dString = (date.getMonth()+1) + "/" + date.getDate() + "/" + (date.getYear() % 100);
@@ -20,7 +21,7 @@ function insertDates(d) {
 }
 
 function responsiveUpdate() {
-    var pWidth = ($(window).width() - 400) / 5; // width of one square
+    pWidth = ($(window).width() - 400) / 5; // width of one square
 
     if (pWidth < 76) // if the window's getting really small
         pWidth = 76;
