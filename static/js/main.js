@@ -19,6 +19,8 @@ $(document).ready(function() {
     /* Initialization */
 
     ref.req = "sync"; // Not uploading anything, just getting the info to start the page.
+    ref.monday = new Date();
+    $(".planner").hide();
     refresh(function() {
         $(".period").each(function(index, value) {
             var id = value.id.split('');
@@ -34,6 +36,7 @@ $(document).ready(function() {
             $(identifier).children(".close").hide();
             $(identifier).children("textarea").hide();
         });
+        $(".planner").show();
     });
 
 
