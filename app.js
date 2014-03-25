@@ -1,7 +1,7 @@
 var express = require("express"),
     app = express(),
-    planner = require('./routes/planner');
-
+    planner = require('./routes/planner'),
+    mongoose = require('mongoose');
 
 
 app.configure(function() {  
@@ -14,11 +14,12 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   
-  app.use(express.favicon());
   app.use(express.session({ secret: 'keyboard cat' }));
   
   app.use(app.router);
   app.use(express.static(__dirname + '/static'));
+
+  mongoose.connect('mongodb://localhost/test');
 });
 
 app.get('/', function(req, res) {
@@ -29,6 +30,8 @@ app.get('/planner', planner.get);
 
 app.post('/planner', planner.post);
 
-var server = app.listen(3000, function() {
-  console.log('Listening on port %d', server.address().port);
+mongoose.connection.on('open', function() {
+  var server = app.listen(3000, function() {
+    console.log('Listening on port %d', server.address().port);
+  });
 });
