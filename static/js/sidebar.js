@@ -34,13 +34,12 @@ function checkForHW(day) {
         var toDo = ""; // Lines to go onto the todo list
         for (var j = 0; j < lines.length; j++) { // only lines with content go on the todo list
             var line = lines[j].escapeHTML(); // remember to escape! don't want forms 
-            var filterMatch = line.matchOrNot(new RegExp(ref.keywords, "i"));
-            console.log(ref.keywords);
+            var filterMatch = line.matchOrNot(new RegExp(settings.keywords, "i"));
             var lookForLab = isLab(cellID) && filterMatch[1]=="with";
             var lookForClass = filterMatch[1] != "with";
 
             if (filterMatch[1] && (lookForLab || lookForClass))
-                line = '<span class="'+ ref.kwStyle[filterMatch[1].toLocaleLowerCase()] +'">' + line + '</span>';
+                line = '<span class="'+ settings.kwStyle[filterMatch[1].toLocaleLowerCase()] +'">' + line + '</span>';
             toDo = toDo + "<li>" + line + "</li>";     
         }
         var title = "";
@@ -67,10 +66,10 @@ function filterAssignments(f, title) {
             var lines = $(value).children("textarea").val().matchOrNot(/[^\n]+/);
             var toDo = ""; // Lines to go onto the todo list
             for (var j = 0; j < lines.length; j++) {
-                var m = lines[j].matchOrNot(ref.keywords);
+                var m = lines[j].matchOrNot(settings.keywords);
                 if (m[1]) {
-                    if (ref.kwStyle[m[1].toLocaleLowerCase()] == f)
-                        toDo = toDo + '<li><span class="' + ref.kwStyle[m[1].toLocaleLowerCase()] + '">' + lines[j] + "</span></li>";
+                    if (settings.kwStyle[m[1].toLocaleLowerCase()] == f)
+                        toDo = toDo + '<li><span class="' + settings.kwStyle[m[1].toLocaleLowerCase()] + '">' + lines[j] + "</span></li>";
                 }
             }
 

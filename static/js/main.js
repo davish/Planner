@@ -14,6 +14,7 @@ var modeDesc = "Day's agenda"
 
 
 var ref = {};
+var settings = {};
 
 $(document).ready(function() {
     /* Initialization */
@@ -21,8 +22,17 @@ $(document).ready(function() {
     ref.req = "sync"; // Not uploading anything, just getting the info to start the page.
     ref.monday = new Date();
     $(".planner").hide();
+
     refresh(function() {
+        
+        settings.colorCode = ref.colorCode;
+        settings.colors = ref.colors;
+        settings.keywords = ref.keywords;
+        settings.kwStyle = ref.kwStyle;
+        settings.schedule = ref.schedule;
+
         $(".period").each(function(index, value) {
+
             var id = value.id.split('');
             var identifier = "#" + value.id;
 
@@ -37,10 +47,9 @@ $(document).ready(function() {
             $(identifier).children("textarea").hide();
         });
         $(".planner").show();
+
+
     });
-
-
-
 
     /* Event Listeners */
     // opening/closing textareas
@@ -87,22 +96,16 @@ $(document).ready(function() {
     $(".navBtn").click(function() {
         ref.req = this.id;
         var dir = 0;
-        if (this.id=="prev")
-            dir = 1;
-        else if (this.id=="next")
-            dir = -1;
+        dir = (this.id == "prev" ? 1 : -1);
         $(".schedule").slide(dir * $(document).width(), 200, function() {
             refresh();
         });
-  
-
     });
 
     $("#filters").change(function() {
       mode = $(this).children("select option:selected").val();
       modeDesc = $(this).children("select option:selected").html();
       refreshSidebar(mode, sidebarDay);
-
     });
 
     // RESPONSIVE DESIGN
@@ -127,22 +130,25 @@ function save() {
 */
 function set(o) {
     $(".period").each(function(index, value) {
-        $(value).children("textarea").val(o[value.id]);
+        if (o[value.id])
+            $(value).children("textarea").val(o[value.id]);
+        else
+            $(value).children("textarea").val("");
     });
 }
 
 function refresh(c) {
     getRef(function() {
+        if (c)
+            c();
         set(ref.assignments);
         refreshSidebar(mode, sidebarDay);
         responsiveUpdate();
-        if (c)
-            c();
+
     });
 }
 
 function getRef(c) {
-    // eventually, will send ref to server and get an updated object in return.
     $.post("/planner", ref, function(data) {
         console.log(data);
         ref = data;

@@ -8,7 +8,6 @@
 */
 
 function isLab(c) {
-
     return getClass(c).length <=1;
 }
 
@@ -17,7 +16,7 @@ function isLab(c) {
 */
 function getClass(s) {
     var class_ID = s.split('');
-    return ref.schedule[class_ID[0]][class_ID[1]];
+    return settings.schedule[class_ID[0]][class_ID[1]];
 }
 
 /* 
