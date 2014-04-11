@@ -26,12 +26,11 @@ app.get('/', function(req, res) {
   res.send("Hello, World!");
 });
 
-app.get('/planner', planner.get);
-
-app.post('/planner', planner.post);
-
-mongoose.connection.on('open', function() {
-  var server = app.listen(3000, function() {
-    console.log('Listening on port %d', server.address().port);
-  });
+app.get('/planner', function(req, res) {
+  res.render("index.html");
 });
+
+var server = app.listen(3000, function() {
+  console.log('Listening on port %d', server.address().port);
+});
+
