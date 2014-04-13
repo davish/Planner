@@ -3,13 +3,49 @@ var ref = {
   'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
   'user': undefined
 };
-var db = undefined;
+var db = new PouchDB('planner');
 var remoteCouch = false;
 $('document').ready(function() {
-
-  $('.loggedIn').hide();
+  $.ajax({
+    url: "/session",
+    success: function(data) {
+      if (data.username && data.password) {
+        ref.user = data.username;
+        $.ajax({
+          type: "POST",
+          // '/signup' capable of handling new or created users originally as an error-handling measure, but we'll just send everyone there
+          url: "/login", 
+          data: {
+            'username': data.username,
+            'password': data.password
+          },
+          statusCode: {
+            403: function() {
+              $('li#username').children('a').text('');
+              $('.loggedIn').hide();
+              $('.loggedOut').show();
+            },
+            500: function() {
+              console.log("something's gone horribly wrong. check the server logs.");
+            }
+          },
+          success: function(data) {
+            $('li#username').children('a').text(data.user);
+            $('.loggedIn').show();
+            $('.loggedOut').hide();
+            remoteCouch = new PouchDB('http://localhost:5984/' + data.user);
+            sync();
+          }
+        });
+      } else {
+        $('li#username').children('a').text('');
+        $('.loggedIn').hide();
+        $('.loggedOut').show(); 
+      }
+    }
+  });
+  // $('.loggedIn').hide();
   // initializeSnake("snake");
-  db = new PouchDB('davish');
 
   getWeek(setAssignmentValues);
   drawDates();
@@ -67,8 +103,6 @@ $('document').ready(function() {
     });
   }
 
-
-
   $('a#save').click(function() {
     saveWeek(getAssignmentValues());
   });
@@ -113,19 +147,24 @@ $('document').ready(function() {
       success: function(data) {
         $('.close#login').click();
         $('li#username').children('a').text(data.user);
+        ref.user = data.user;
         $('.loggedIn').show();
         $('.loggedOut').hide();
-        console.log(data);
+        remoteCouch = new PouchDB('http://localhost:5984/' + data.user);
+        sync();
       }
     });
   });
-
   $('li#logoutButton').click(function() {
-    $('.loggedOut').show();
-    $('.loggedIn').hide();
+    ref.user = undefined;
+    $.ajax({
+      url: "/logout",
+      success: function() {
+        $('.loggedOut').show();
+        $('.loggedIn').hide();
+      }
+    });
   });
-
-
   $('textarea').dblclick(function() { // toggle between strikethrough and no styling on textareas
     if ($(this).css("text-decoration") == "none solid rgb(0, 0, 0)")
       $(this).css("text-decoration", "line-through");
@@ -134,6 +173,19 @@ $('document').ready(function() {
   });
 
 });
+
+
+function sync() {
+  console.log("syncing to %s", remoteCouch)
+  var opts = {live: true, complete: syncError};
+  db.replicate.to(remoteCouch, opts);
+  db.replicate.from(remoteCouch, opts);
+}
+
+function syncError(err) {
+  console.log('Sync has stopped.');
+  remoteCouch = false;
+} 
 
 
 function saveWeek(o) {
@@ -238,6 +290,5 @@ $.fn.slide = function(dist, t, c) {
 }
 
 String.prototype.escapeHTML = function() {
-
     return $('<div/>').text(this).html();
 };

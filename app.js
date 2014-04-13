@@ -55,9 +55,27 @@ app.get('/login', function(req, res) {
 
 app.post('/login', login);
 
+app.get('/logout', function(req, res) {
+  req.session.username = undefined;
+  req.session.password = undefined;
+  res.clearCookie("AuthSession");
+  res.send(200);
+});
+
+app.get('/session', function(req, res) {
+  res.send({
+    "username": req.session.username,
+    "password": req.session.password
+  });
+});
+
 function login(req, res) {
   nano.auth(req.body.username, req.body.password, function(err, body, headers) {
     if (headers) { // authorization went through
+
+      req.session.username = req.body.username;
+      req.session.password = req.body.password;
+
       res.type('text/json');
       res.cookie("AuthSession", cookie.parse(headers['set-cookie'][0]).AuthSession);
       res.send({"user": req.body.username});
