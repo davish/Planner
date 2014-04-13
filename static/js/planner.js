@@ -95,7 +95,8 @@ $('document').ready(function() {
   $("#loginSubmit").click(function() {
     $.ajax({
       type: "POST",
-      url: "/login",
+      // '/signup' capable of handling new or created users originally as an error-handling measure, but we'll just send everyone there
+      url: "/signup", 
       data: {
         'username': $('#loginUsername').val(),
         'password': $('#loginPassword').val()
@@ -104,6 +105,9 @@ $('document').ready(function() {
         403: function() {
           $('li#username').children('a').text('');
           console.log("incorrect username and password");
+        },
+        500: function() {
+          console.log("something's gone horribly wrong. check the server logs.");
         }
       },
       success: function(data) {
