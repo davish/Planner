@@ -1,11 +1,13 @@
 var ref = {
   'monday': getMonday(new Date()),
-  'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]]
+  'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
+  'user': undefined
 };
 var db = undefined;
 var remoteCouch = false;
 $('document').ready(function() {
 
+  $('.loggedIn').hide();
   // initializeSnake("snake");
   db = new PouchDB('davish');
 
@@ -89,6 +91,36 @@ $('document').ready(function() {
       drawDates();
     });
   });
+
+  $("#loginSubmit").click(function() {
+    $.ajax({
+      type: "POST",
+      url: "/login",
+      data: {
+        'username': $('#loginUsername').val(),
+        'password': $('#loginPassword').val()
+      },
+      statusCode: {
+        403: function() {
+          $('li#username').children('a').text('');
+          console.log("incorrect username and password");
+        }
+      },
+      success: function(data) {
+        $('.close#login').click();
+        $('li#username').children('a').text(data.user);
+        $('.loggedIn').show();
+        $('.loggedOut').hide();
+        console.log(data);
+      }
+    });
+  });
+
+  $('li#logoutButton').click(function() {
+    $('.loggedOut').show();
+    $('.loggedIn').hide();
+  });
+
 
   $('textarea').dblclick(function() { // toggle between strikethrough and no styling on textareas
     if ($(this).css("text-decoration") == "none solid rgb(0, 0, 0)")
