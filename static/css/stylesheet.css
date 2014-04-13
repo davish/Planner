@@ -1,0 +1,56 @@
+textarea {
+  height: 70px;
+  width: 100%;
+  display: block;
+
+  resize: none;
+
+  font-size: 12px;
+  border-color: #777;
+
+}
+.day {
+  border-color: #777;
+  border-style: solid;
+  border-width: 0px;
+  font-size: 11px;
+}
+
+.subj {
+  display: table-cell;
+  height: 70px;
+  padding-top: 25px;
+  border-width: 0px;
+  vertical-align:right;
+}
+
+#snake {
+  height: 210px;
+  width: 100%;
+}
+.weekendevnt {
+  border-color: #777;
+  border-style: solid;
+  border-width: 1px;
+
+  height: 140px;
+  margin-bottom: 0px;
+}
+.note#title {
+  border-color: #777;
+  border-style: solid;
+  border-width: 1px;
+}
+.note#box {
+  height: 118px;
+}
+
+div#planner  {
+  position:relative;
+}
+#weekend {
+  position: relative;
+}
+#sidebar {
+  position:relative;
+}
