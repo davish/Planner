@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 *.pyc
+=======
+node_modules/
+references.js
+>>>>>>> Rev_4
