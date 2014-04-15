@@ -138,7 +138,7 @@ function signup(req, res) {
   });
 }
 
-var server = app.listen(3000, function() {
+var server = app.listen(process.argv[2] || 3000, function() {
   console.info('Listening on port %d', server.address().port);
 });
 
