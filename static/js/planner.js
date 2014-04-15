@@ -52,14 +52,26 @@ $('document').ready(function() {
 
   $("#subjects").append('<div class="row"><div class="col-sm-2 col-sm-offset-10" id="year"></div></div>')
 
-  for (var i = 1; i <= ref.rows.length; i++) {
-    var row = $("#planner").append('<div class="row"></div>');
-    $("#subjects").append('<div class="row"><div class="col-sm-2 subj col-sm-offset-10" id="'+(i)+'">'+ref.rows[i-1][0]+'</div></div>');
-    for (var j = 1; j <= 5; j++) {
-      if (j == 1)
-        row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
-      else
-        row.append('<div class="col-sm-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
+  if ($('.container').width() >= 720) {
+    for (var i = 1; i <= ref.rows.length; i++) {
+      var row = $("#planner").append('<div class="row"></div>');
+      $("#subjects").append('<div class="row"><div class="col-sm-2 subj col-sm-offset-10" id="'+(i)+'">'+ref.rows[i-1][0]+'</div></div>');
+      for (var j = 1; j <= 5; j++) {
+        if (j == 1)
+          row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
+        else
+          row.append('<div class="col-sm-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
+      }
+    }
+  } else {
+    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    for (var i = 1; i <= ref.rows.length; i++) {
+      $("#mobile-tabs").append('<li><a href="#'+ ref.rows[i-1][0]+'" data-toggle="tab">'+ref.rows[i-1][0]+'</a></li>');
+      $('#mobile-tab-content').append('<div class="tab-pane" id="'+ ref.rows[i-1][0] +'"></div>');
+      for (var j = 1; j <= days.length; j++) {
+        $('#' + ref.rows[i-1][0]).append('<h3>' + days[j-1] + '</h3>');
+        $('#' + ref.rows[i-1][0]).append('<div><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
+      }
     }
   }
 
@@ -138,10 +150,10 @@ $('document').ready(function() {
       statusCode: {
         403: function() {
           $('li#username').children('a').text('');
-          console.log("incorrect username and password");
+          $('#403').show();
         },
         500: function() {
-          console.log("something's gone horribly wrong. check the server logs.");
+          alert("something's gone horribly wrong. check the server logs.");
         }
       },
       success: function(data) {
@@ -150,6 +162,7 @@ $('document').ready(function() {
         ref.user = data.user;
         $('.loggedIn').show();
         $('.loggedOut').hide();
+        $('#403').hide();
         remoteCouch = new PouchDB('http://localhost:5984/' + data.user);
         sync();
       }

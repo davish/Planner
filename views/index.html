@@ -98,18 +98,12 @@
   <div class="container visible-xs"> <!-- Mobile Site -->
         <!-- Nav tabs -->
     <ul class="nav nav-tabs" id="mobile-tabs">
-      <li><a href="#home" data-toggle="tab">Home</a></li>
-      <li><a href="#profile" data-toggle="tab">Profile</a></li>
-      <li><a href="#messages" data-toggle="tab">Messages</a></li>
-      <li><a href="#settings" data-toggle="tab">Settings</a></li>
+      <!-- <li><a href="#home" data-toggle="tab">Home</a></li> -->
+
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content" id="mobile-tab-content">
-      <div class="tab-pane active" id="home">Hello, world! home</div>
-      <div class="tab-pane" id="profile">Profile</div>
-      <div class="tab-pane" id="messages">messages</div>
-      <div class="tab-pane" id="settings">settings</div>
     </div>
   </div>
 
@@ -131,6 +125,8 @@
             <input type="password" class="form-control" id="loginPassword" placeholder="Password">
           </div>
           <button id="loginSubmit" class="btn btn-default">Submit</button>
+          <br>
+          <span id="403" style="color: red; display: none;">The username/password combo you entered does not match.</span>
       </div>
     </div>
   </div>
