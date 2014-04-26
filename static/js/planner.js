@@ -1,9 +1,11 @@
 var ref = {
-  'monday': getMonday(new Date()),
-  'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
-  'user': undefined
+  'monday': getMonday(new Date())
+  // 'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
 };
-var db = new PouchDB('planner');
+
+var server = 'hermes.local';
+
+var db = null;
 var remoteCouch = false;
 $('document').ready(function() {
   $.ajax({
@@ -11,195 +13,39 @@ $('document').ready(function() {
     success: function(data) {
       if (data.username && data.password) {
         ref.user = data.username;
-        $.ajax({
-          type: "POST",
-          // '/signup' capable of handling new or created users originally as an error-handling measure, but we'll just send everyone there
-          url: "/login", 
-          data: {
-            'username': data.username,
-            'password': data.password
-          },
-          statusCode: {
-            403: function() {
-              $('li#username').children('a').text('');
-              $('.loggedIn').hide();
-              $('.loggedOut').show();
-            },
-            500: function() {
-              console.log("something's gone horribly wrong. check the server logs.");
-            }
-          },
-          success: function(data) {
-            $('li#username').children('a').text(data.user);
-            $('.loggedIn').show();
-            $('.loggedOut').hide();
-            remoteCouch = new PouchDB('http://localhost:5984/' + data.user);
-            sync();
-          }
+        login(data.username, data.password, function(data) { // Login was successful
+          $('li#username').children('a').text(data.user);
+          $('.loggedIn').show();
+          $('.loggedOut').hide();
+          $('textarea').each(function(index, attribute) {
+            $(this).removeAttr("disabled");
+          });
+        }, function() { // login not successful
+          $('.choiceModal').modal({backdrop: 'static', 'keyboard': false});
+          $('li#username').children('a').text('');
+          $('.loggedIn').hide();
+          $('.loggedOut').show();
+          $('textarea').each(function(index, attribute) {
+            $(this).attr("disabled", "");
+          });
         });
-      } else {
+      } else { // no one session for this browser found
+        $('.choiceModal').modal({backdrop: 'static', 'keyboard': false});
         $('li#username').children('a').text('');
         $('.loggedIn').hide();
-        $('.loggedOut').show(); 
+        $('.loggedOut').show();
+        $('textarea').each(function(index, attribute) {
+          $(this).attr("disabled", "");
+        });
       }
     }
   });
-  // $('.loggedIn').hide();
-  // initializeSnake("snake");
-
-  getWeek(setAssignmentValues);
   drawDates();
 
   $("#subjects").append('<div class="row"><div class="col-sm-2 col-sm-offset-10" id="year"></div></div>')
 
-  if ($('.container').width() >= 720) {
-    for (var i = 1; i <= ref.rows.length; i++) {
-      var row = $("#planner").append('<div class="row"></div>');
-      $("#subjects").append('<div class="row"><div class="col-sm-2 subj col-sm-offset-10" id="'+(i)+'">'+ref.rows[i-1][0]+'</div></div>');
-      for (var j = 1; j <= 5; j++) {
-        if (j == 1)
-          row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
-        else
-          row.append('<div class="col-sm-2"><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
-      }
-    }
-  } else {
-    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    for (var i = 1; i <= ref.rows.length; i++) {
-      $("#mobile-tabs").append('<li><a href="#'+ ref.rows[i-1][0]+'" data-toggle="tab">'+ref.rows[i-1][0]+'</a></li>');
-      $('#mobile-tab-content').append('<div class="tab-pane" id="'+ ref.rows[i-1][0] +'"></div>');
-      for (var j = 1; j <= days.length; j++) {
-        $('#' + ref.rows[i-1][0]).append('<h3>' + days[j-1] + '</h3>');
-        $('#' + ref.rows[i-1][0]).append('<div><textarea id="'+ ref.rows[i-1][1] + String(j)+'"></textarea></div>');
-      }
-    }
-  }
-
-  /* 
-    Event Handlers
-  */
-
-  var isiOS = false;
-  var agent = navigator.userAgent.toLowerCase();
-  if(agent.indexOf('iphone') >= 0 || agent.indexOf('ipad') >= 0) {
-    isiOS = true;
-  }
-
-  if (!isiOS){
-    $('textarea').dblclick(function() { // toggle between strikethrough and no styling on textareas
-      if ($(this).css("text-decoration") == "none solid rgb(0, 0, 0)")
-        $(this).css("text-decoration", "line-through");
-      else
-        $(this).css("text-decoration", "none solid rgb(0, 0, 0)");
-    });
-  } else {
-    var action;
-    $('textarea').bind('touchend', function(event){
-      var now = new Date().getTime();
-      var lastTouch = $(this).data('lastTouch') || now + 1 /** the first time this will make delta a negative number */;
-      var delta = now - lastTouch;
-      clearTimeout(action);
-      if (delta<500 && delta>0){
-        if ($(this).css("text-decoration") == "none solid rgb(0, 0, 0)")
-          $(this).css("text-decoration", "line-through");
-        else
-          $(this).css("text-decoration", "none solid rgb(0, 0, 0)");        
-      } else {
-        $(this).data('lastTouch', now);
-        action = setTimeout(function(e){
-         // If this runs you can invoke your 'click/touchend' code
-         clearTimeout(action);   // clear the timeout
-        }, 500, [event]);
-      }
-      $(this).data('lastTouch', now);
-    });
-  }
-
-  $('a#save').click(function() {
-    saveWeek(getAssignmentValues());
-  });
-  $('a#back').click(function() {
-    // animation
-    $('#weekend').slide($(window).width(), 200);
-    $("#planner").slide($(window).width(), 200, function() {
-      saveWeek(getAssignmentValues()); // save the current state
-      ref.monday = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() - 7); // decrement by 1 week
-      getWeek(setAssignmentValues);
-      drawDates();
-    });
-  });
-  $('a#next').click(function() {
-    $('#weekend').slide(-$(window).width(), 200);
-    $("#planner").slide(-$(window).width(), 200, function() {
-      saveWeek(getAssignmentValues());
-      ref.monday = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + 7);
-      getWeek(setAssignmentValues);
-      drawDates();
-    });
-  });
-
-  $("#loginSubmit").click(function() {
-    $.ajax({
-      type: "POST",
-      // '/signup' capable of handling new or created users originally as an error-handling measure, but we'll just send everyone there
-      url: "/signup", 
-      data: {
-        'username': $('#loginUsername').val(),
-        'password': $('#loginPassword').val()
-      },
-      statusCode: {
-        403: function() {
-          $('li#username').children('a').text('');
-          $('#403').show();
-        },
-        500: function() {
-          alert("something's gone horribly wrong. check the server logs.");
-        }
-      },
-      success: function(data) {
-        $('.close#login').click();
-        $('li#username').children('a').text(data.user);
-        ref.user = data.user;
-        $('.loggedIn').show();
-        $('.loggedOut').hide();
-        $('#403').hide();
-        remoteCouch = new PouchDB('http://localhost:5984/' + data.user);
-        sync();
-      }
-    });
-  });
-  $('li#logoutButton').click(function() {
-    ref.user = undefined;
-    $.ajax({
-      url: "/logout",
-      success: function() {
-        $('.loggedOut').show();
-        $('.loggedIn').hide();
-      }
-    });
-  });
-  $('textarea').dblclick(function() { // toggle between strikethrough and no styling on textareas
-    if ($(this).css("text-decoration") == "none solid rgb(0, 0, 0)")
-      $(this).css("text-decoration", "line-through");
-    else
-      $(this).css("text-decoration", "none solid rgb(0, 0, 0)");
-  });
 
 });
-
-
-function sync() {
-  console.log("syncing to %s", remoteCouch)
-  var opts = {live: true, complete: syncError};
-  db.replicate.to(remoteCouch, opts);
-  db.replicate.from(remoteCouch, opts);
-}
-
-function syncError(err) {
-  console.log('Sync has stopped.');
-  remoteCouch = false;
-} 
-
 
 function saveWeek(o) {
   db.get(ref.monday.toISOString()).then(function (w) {
@@ -229,12 +75,12 @@ function getWeek(c) {
     c(JSON.parse(w.assignments));
   }, function (err, response) {
     if(err) { // make a new document
-      // console.log(err);
+      c(genBlankAssignments());
       db.put({
         '_id': ref.monday.toISOString(),
         'assignments': JSON.stringify(genBlankAssignments())
       });
-      c(genBlankAssignments());
+      
     } else {
 
     }
@@ -244,7 +90,7 @@ function getWeek(c) {
 function getAssignmentValues() {
   var d = {};
   $('textarea').each(function (index, ta) {
-    d[ta.id] = [ta.value, $(this).css("text-decoration") != "none solid rgb(0, 0, 0)"];
+    d[ta.id] = [ta.value, $(this).css("text-decoration") == "line-through"];
   });
   return d;
 }
@@ -260,6 +106,83 @@ function setAssignmentValues(d) {
     else
       $(ta).val('');
   });
+}
+
+function login(user, pswd, c, fail) {
+  $.ajax({ // now get a new auth cookie from couch
+    type: "POST",
+    url: "/login", 
+    data: {
+      'username': user,
+      'password': pswd
+    },
+    statusCode: {
+      403: fail,
+      500: function() {
+        alert("There's been a server error. Contact NLTL for assistance.");
+      }
+    },
+    success: function(data) {
+      ref.user = data.user;
+      db = new PouchDB('http://'+server+':5984/' + data.user);
+      db.get("settings").then(function(settings) {
+        renderRows(settings.rows);
+        getWeek(setAssignmentValues);
+      });
+      
+      if (c) c(data);
+    }
+  });
+}
+
+function signup(user, pswd, c, fail) {
+  $.ajax({
+    type: "POST",
+    url: "/signup", 
+    data: {
+      'username': user,
+      'password': pswd
+    },
+    statusCode: { 
+      403: fail,
+      500: function() {
+        alert("There's been a server error. Contact NLTL for assistance.");
+      }
+    },
+    success: function(data) {
+      ref.user = data.user;
+      db = new PouchDB('http://'+server+':5984/' + data.user);
+      if (c) 
+        c(data);
+      getWeek(setAssignmentValues);
+    }
+  });
+}
+
+
+function renderRows(rows) {
+    if ($('.container').width() >= 720) {
+    for (var i = 1; i <= rows.length; i++) {
+      var row = $("#planner").append('<div class="row"></div>');
+      $("#subjects").append('<div class="row"><div class="col-sm-2 subj col-sm-offset-10" id="'+(i)+'">'+rows[i-1][0]+'</div></div>');
+      for (var j = 1; j <= 5; j++) {
+        if (j == 1)
+          row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
+        else
+          row.append('<div class="col-sm-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
+      }
+    }
+  } else {
+    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    for (var i = 1; i <= rows.length; i++) {
+      $("#mobile-tabs").append('<li><a href="#'+ rows[i-1][0]+'" data-toggle="tab">'+rows[i-1][0]+'</a></li>');
+      $('#mobile-tab-content').append('<div class="tab-pane" id="'+ rows[i-1][0] +'"></div>');
+      for (var j = 1; j <= days.length; j++) {
+        $('#' + rows[i-1][0]).append('<h3>' + days[j-1] + '</h3>');
+        $('#' + rows[i-1][0]).append('<div><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
+      }
+    }
+  }
 }
 
 function getMonday(d) {
@@ -278,10 +201,8 @@ function genBlankAssignments() {
 
 function drawDates() {
   $('.day').each(function(index, element) {
-    if (index < 5) {
-      var d = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + index);
-      $(element).html('<span>' + $(element).children('span').html() + '</span> ' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100);
-    }
+    var d = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + index);
+    $(element).html('<span>' + $(element).children('span').html() + '</span> ' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100);
   });
 }
 
@@ -290,7 +211,7 @@ $.fn.slide = function(dist, t, c) {
     var p = $(element).css("position");
     $(element).css("position", "relative");
     if (!t)
-        t = 500
+        t = 500;
     $(element).animate({
         left: "+=" + dist
     }, t, function() {
