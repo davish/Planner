@@ -3,7 +3,7 @@ var ref = {
   // 'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
 };
 
-var server = 'hermes.local';
+window.server = 'hermes.local';
 
 var db = null;
 var remoteCouch = false;
