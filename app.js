@@ -29,15 +29,16 @@ app.get('/planner', function(req, res) {
   res.render("index.html");
 });
 
-app.post('/signup', function(req, res) {
+app.get('/settings', function(req, res) {
+  res.render("settings.html");
+});
 
+app.post('/signup', function(req, res) {
   /* Look to see if user exists */
   _users.get('org.couchdb.user:' + req.body.username, function(err, body) {
     if (!err) { // user is present in the database, go directly to login authorization.
-      // console.log('user \'' + req.body.username + '\' already exists. signing in user...') 
-      login(req, res);
+      res.send(403, {'message': 'The username you attempted to sign up with already exists.'});
     } else if (err['message'] == 'missing' || err['status-code'] == 404) { // if the user isn't registered in the database, proceed with signup process
-      // console.log('user ' + req.body.username + ' does not exist. creating user...');
       signup(req, res);
     } else { // there's a different error that's not meant to be handled
       console.error(err)
@@ -45,12 +46,6 @@ app.post('/signup', function(req, res) {
       return;  
     }
   });
-  /* If no user with the same name exists */
-});
-
-app.get('/login', function(req, res) {
-  res.type('html');
-  res.end('<form method="post"><input type="username" name="user"></input> <br> <input type="password" name="password"></input><input type="submit"> </input>');
 });
 
 app.post('/login', login);
@@ -59,7 +54,7 @@ app.get('/logout', function(req, res) {
   req.session.username = undefined;
   req.session.password = undefined;
   res.clearCookie("AuthSession");
-  res.send(200);
+  res.redirect('/planner');
 });
 
 app.get('/session', function(req, res) {
@@ -72,7 +67,6 @@ app.get('/session', function(req, res) {
 function login(req, res) {
   nano.auth(req.body.username, req.body.password, function(err, body, headers) {
     if (headers) { // authorization went through
-
       req.session.username = req.body.username;
       req.session.password = req.body.password;
 
@@ -81,7 +75,7 @@ function login(req, res) {
       res.send({"user": req.body.username});
     }
     else // username/password combo got rejected
-      res.send(403)
+      res.send(403, {'message': 'The username and password entered do not match.'});
   });
 }
 
@@ -95,9 +89,8 @@ function signup(req, res) {
   };
   // create the companion db and add the _security doc to it with said user as the sole member.
   // http://wiki.apache.org/couchdb/Security_Features_Overview
-  nano.db.create(user.name, function(err, body) {
+  nano.db.create(user.name, function(err, body) { // mo' callbacks mo' problems
     if (!err) { // if nothing went wrong
-      // console.log(user.name + "'s db was created.");
       var security = {
         'admins': {
           'names': [],
@@ -108,30 +101,48 @@ function signup(req, res) {
           'roles': []
         }
       }
+      var settings = {
+        'rows': [
+                  ["English", 1], 
+                  ["History", 2], 
+                  ["Math", 3], 
+                  ["Science", 4], 
+                  ["Language", 5], 
+                  ["Other", 6], 
+                  ["Labs", 7]
+                ],
+        'theme': "default"
+      }
       var userDB = nano.use(user.name); // use the newly created database
       userDB.insert(security, "_security", function(err, body) { // add the '_security' doc to the db
         if (!err) {
-          // console.log('\'_security\' document was successfully added to the database.');
-          // insert user into the _users db
-          _users.insert(user, 'org.couchdb.user:' + user.name, function(err, body) {
+          userDB.insert(settings, "settings", function(err, body) {
+            // insert user into the _users db
             if (!err) {
-              // console.log('user ' + user.name + ' has been added. logging in...')
-              // success! now login the freshly-minted user.
-              login(req, res);
+              _users.insert(user, 'org.couchdb.user:' + user.name, function(err, body) {
+                if (!err) {
+                  // success! now login the freshly-minted user.
+                  login(req, res);
+                } else {
+                  console.error(err);
+                  res.send(500, err);
+                  return;
+                }
+              }); 
             } else {
-              console.error(err)
+              console.error(err);
               res.send(500, err);
               return;
             }
-          }); 
+          });
         } else {
-          console.error(err)
+          console.error(err);
           res.send(500, err);
           return;
         }
       });
     } else {
-      console.error(err)
+      console.error(err);
       res.send(500, err);
       return;
     }
