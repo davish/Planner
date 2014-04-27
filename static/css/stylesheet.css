@@ -9,6 +9,10 @@ textarea {
   border-color: #777;
 
 }
+
+.choiceModal {
+  padding-top: 15%;
+}
 .day {
   border-color: #777;
   border-style: solid;
