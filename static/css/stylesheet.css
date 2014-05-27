@@ -9,7 +9,9 @@ textarea {
   border-color: #777;
 
 }
-
+.input-group {
+  width: 50%;
+}
 .choiceModal {
   padding-top: 15%;
 }

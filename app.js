@@ -30,7 +30,10 @@ app.get('/planner', function(req, res) {
 });
 
 app.get('/settings', function(req, res) {
-  res.render("settings.html");
+  if (req.session.username)
+    res.render("settings.html");
+  else
+    res.redirect('/planner');
 });
 
 app.post('/signup', function(req, res) {
