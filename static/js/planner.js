@@ -124,10 +124,11 @@ function login(user, pswd, c, fail) {
     },
     success: function(data) {
       ref.user = data.user;
-      db = new PouchDB('http://'+server+':5984/' + data.user);
+      console.log(data.user);
+      db = new PouchDB('http://'+ data.user +':'+ pswd +'@'+server+':5984/' + data.user);
       db.get("settings").then(function(settings) {
-        renderRows(settings.rows);
-        getWeek(setAssignmentValues);
+        ref.settings = settings;
+        renderRows(ref.settings.rows);
       });
       
       if (c) c(data);
@@ -150,21 +151,23 @@ function signup(user, pswd, c, fail) {
       }
     },
     success: function(data) {
-      ref.user = data.user;
-      db = new PouchDB('http://'+server+':5984/' + data.user);
-      if (c) 
-        c(data);
-      getWeek(setAssignmentValues);
+      // ref.user = data.user;
+      // db = new PouchDB('http://'+server+':5984/' + data.user);
+      // if (c) 
+      //   c(data);
+      // getWeek(setAssignmentValues);
+      location.reload(true);
     }
   });
 }
 
 
 function renderRows(rows) {
-    if ($('.container').width() >= 720) {
+  if ($('.container').width() >= 720) {
+    $("#planner").html("");
+    renderSubjects(rows);
     for (var i = 1; i <= rows.length; i++) {
       var row = $("#planner").append('<div class="row"></div>');
-      $("#subjects").append('<div class="row"><div class="col-sm-2 subj col-sm-offset-10" id="'+(i)+'">'+rows[i-1][0]+'</div></div>');
       for (var j = 1; j <= 5; j++) {
         if (j == 1)
           row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
@@ -172,7 +175,19 @@ function renderRows(rows) {
           row.append('<div class="col-sm-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
       }
     }
-  } else {
+    var labs = $("#planner").append('<div class="row"></div>');
+    for (var j = 1; j <= 5; j++) {
+      if (j==1)
+        labs.append('<div class="col-sm-2 col-sm-offset-2"><textarea class="labs" id="0' + String(j)+'"></textarea></div>');
+      else
+        labs.append('<div class="col-sm-2"><textarea class="labs" id="0' + String(j)+'"></textarea></div>');
+    }
+    getWeek(setAssignmentValues);
+
+  }
+
+
+/*  else {
     var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     for (var i = 1; i <= rows.length; i++) {
       $("#mobile-tabs").append('<li><a href="#'+ rows[i-1][0]+'" data-toggle="tab">'+rows[i-1][0]+'</a></li>');
@@ -182,7 +197,84 @@ function renderRows(rows) {
         $('#' + rows[i-1][0]).append('<div><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
       }
     }
-  }
+  }*/
+
+}
+
+function renderSubjects(r) {
+  $("#subjects").html("");
+  for (var i = 0; i < r.length; i++)
+    $('#subjects').append('<div class="subj"><span id="'+(i+1)+'">'+r[i][0]+'</span> <button class="delete btn btn-xs btn-danger" style="display:none;">-</button></div>');
+  $('#subjects').append('<div class="subj" id="0">Labs</div>')
+
+  $('.subj').unbind();
+  $('.subj').children("span").click(function() {
+    if (this.id != 0) {
+      $(this).prop('contenteditable', true);
+    }
+  });
+  $('.subj').mouseenter(function() {
+    $(this).children("button").show();
+  });
+  $('.subj').mouseleave(function() {
+     $(this).children("button").hide();
+  });
+
+  $('.subj').children("span").blur(function() {
+    var id = this.id;
+    var subj = $(this).text();
+    if (id != 0) {
+      $(this).prop('contenteditable', false);
+      ref.settings.rows[id-1][0] = subj;
+      db.put(ref.settings, function(err, response) {
+        if (err) {
+          alert("there's been an error. try again.");
+          console.log(err);
+        } else {
+          db.get("settings").then(function(s) {
+            ref.settings = s;
+          });
+        }
+      });
+    }
+  });
+
+  $('button.delete').click(function() {
+    var id = $(this).parent().children("span")[0].id;
+    if (confirm("Are you sure you want to delete " + ref.settings.rows[id-1][0] + "?")){
+      ref.settings.rows.splice(id-1, 1);
+      db.put(ref.settings, function(err, response) {
+        if (err) {
+          alert("there's been an error. try again.");
+          console.log(err);
+        } else {
+          db.get("settings").then(function(s) {
+            ref.settings = s;
+            renderRows(s.rows);
+          });
+        }
+      });
+    }
+  });
+  $('button#add').click(function() {
+    r = ref.settings.rows;
+    r.push(["Class", r[r.length-1][1]+1]);
+    ref.settings.rows = r;
+    db.put(ref.settings, function(err, response) {
+      if (err) {
+        alert("there's been an error. try again.");
+        console.log(err);
+      } else {
+        db.get("settings").then(function(s) {
+          ref.settings = s;
+          renderRows(s.rows);
+          $('span#'+String(s.rows.length)).prop('contenteditable', true);
+          $('span#'+String(s.rows.length)).focus().selectText();
+          // $('span#'+String(s.rows.length)).select();
+        });
+      }
+    });
+  });
 }
 
 function getMonday(d) {

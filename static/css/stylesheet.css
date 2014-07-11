@@ -23,11 +23,12 @@ textarea {
 }
 
 .subj {
-  display: table-cell;
+  /*display: table-cell;*/
   height: 70px;
-  padding-top: 25px;
+  width: 100%;
+  padding-top: 40px;
   border-width: 0px;
-  vertical-align:right;
+  /*vertical-align:right;*/
 }
 
 #snake {

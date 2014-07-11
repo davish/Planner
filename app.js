@@ -30,9 +30,6 @@ app.get('/planner', function(req, res) {
 });
 
 app.get('/settings', function(req, res) {
-  if (req.session.username)
-    res.render("settings.html");
-  else
     res.redirect('/planner');
 });
 
@@ -111,8 +108,7 @@ function signup(req, res) {
                   ["Math", 3], 
                   ["Science", 4], 
                   ["Language", 5], 
-                  ["Other", 6], 
-                  ["Labs", 7]
+                  ["Other", 6]
                 ],
         'theme': "default"
       }
