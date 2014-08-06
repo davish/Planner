@@ -103,12 +103,12 @@ function signup(req, res) {
       }
       var settings = {
         'rows': [
-                  ["English", 1], 
-                  ["History", 2], 
-                  ["Math", 3], 
-                  ["Science", 4], 
-                  ["Language", 5], 
-                  ["Other", 6]
+                  "English", 
+                  "History", 
+                  "Math", 
+                  "Science", 
+                  "Language",
+                  "Other"
                 ],
         'theme': "default"
       }

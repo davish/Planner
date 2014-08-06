@@ -3,6 +3,7 @@ $('document').ready(function() {
     Event Handlers
   */
 
+
   var isiOS = false;
   var agent = navigator.userAgent.toLowerCase();
   if(agent.indexOf('iphone') >= 0 || agent.indexOf('ipad') >= 0) {
@@ -61,6 +62,8 @@ $('document').ready(function() {
       drawDates();
     });
   });
+
+
 
   $("form#login").submit(function(e) {
     e.preventDefault();

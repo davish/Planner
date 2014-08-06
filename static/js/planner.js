@@ -90,7 +90,8 @@ function getWeek(c) {
 function getAssignmentValues() {
   var d = {};
   $('textarea').each(function (index, ta) {
-    d[ta.id] = [ta.value, $(this).css("text-decoration") == "line-through"];
+    // with the cell's ID as the key, put the contents of the array, and the boolean of if it's completed or not, into the object.
+    d[ta.id] = [ta.value, $(this).css("text-decoration") == "line-through"]; 
   });
   return d;
 }
@@ -124,7 +125,6 @@ function login(user, pswd, c, fail) {
     },
     success: function(data) {
       ref.user = data.user;
-      console.log(data.user);
       db = new PouchDB('http://'+ data.user +':'+ pswd +'@'+server+':5984/' + data.user);
       db.get("settings").then(function(settings) {
         ref.settings = settings;
@@ -151,11 +151,6 @@ function signup(user, pswd, c, fail) {
       }
     },
     success: function(data) {
-      // ref.user = data.user;
-      // db = new PouchDB('http://'+server+':5984/' + data.user);
-      // if (c) 
-      //   c(data);
-      // getWeek(setAssignmentValues);
       location.reload(true);
     }
   });
@@ -166,22 +161,31 @@ function renderRows(rows) {
   if ($('.container').width() >= 720) {
     $("#planner").html("");
     renderSubjects(rows);
-    for (var i = 1; i <= rows.length; i++) {
+    for (var i = 0; i < rows.length; i++) {
       var row = $("#planner").append('<div class="row"></div>');
       for (var j = 1; j <= 5; j++) {
         if (j == 1)
-          row.append('<div class="col-sm-2 col-sm-offset-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
+          row.append('<div class="col-sm-2 col-sm-offset-2"><textarea class="ta" id="'+ String(i+1) + String(j)+'"></textarea></div>');
         else
-          row.append('<div class="col-sm-2"><textarea id="'+ rows[i-1][1] + String(j)+'"></textarea></div>');
+          row.append('<div class="col-sm-2"><textarea class="ta" id="'+ String(i+1) + String(j)+'"></textarea></div>');
       }
     }
     var labs = $("#planner").append('<div class="row"></div>');
     for (var j = 1; j <= 5; j++) {
       if (j==1)
-        labs.append('<div class="col-sm-2 col-sm-offset-2"><textarea class="labs" id="0' + String(j)+'"></textarea></div>');
+        labs.append('<div class="col-sm-2 col-sm-offset-2"><textarea class="labs ta" id="0' + String(j)+'"></textarea></div>');
       else
-        labs.append('<div class="col-sm-2"><textarea class="labs" id="0' + String(j)+'"></textarea></div>');
+        labs.append('<div class="col-sm-2"><textarea class="labs ta" id="0' + String(j)+'"></textarea></div>');
     }
+    $("textarea").keydown(function(e) {
+      if (e.which == 13) {
+        var value = $(this).val().toLowerCase();
+        if (value.indexOf("test") != -1) {
+          var d = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + (this.id[1]-1));
+          console.log(((d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100) + " " + ref.settings.rows[this.id[0]-1]);
+        }
+      }
+    });
     getWeek(setAssignmentValues);
 
   }
@@ -204,28 +208,30 @@ function renderRows(rows) {
 function renderSubjects(r) {
   $("#subjects").html("");
   for (var i = 0; i < r.length; i++)
-    $('#subjects').append('<div class="subj"><span id="'+(i+1)+'">'+r[i][0]+'</span> <button class="delete btn btn-xs btn-danger" style="display:none;">-</button></div>');
+    $('#subjects').append('<div class="subj"><span id="'+(i+1)+'">'+r[i]+'</span> <button class="delete btn btn-xs btn-danger" style="display:none;">-</button></div>');
   $('#subjects').append('<div class="subj" id="0">Labs</div>')
 
-  $('.subj').unbind();
+  $('.subj').unbind(); // When you add a subject, need to re-add all the listeners
   $('.subj').children("span").click(function() {
     if (this.id != 0) {
       $(this).prop('contenteditable', true);
     }
   });
+  // mouseover logic
   $('.subj').mouseenter(function() {
     $(this).children("button").show();
   });
   $('.subj').mouseleave(function() {
      $(this).children("button").hide();
   });
-
+  // Save the subject name
   $('.subj').children("span").blur(function() {
     var id = this.id;
     var subj = $(this).text();
     if (id != 0) {
-      $(this).prop('contenteditable', false);
-      ref.settings.rows[id-1][0] = subj;
+      $(this).prop('contenteditable', false); // make it not editable
+      ref.settings.rows[id-1] = subj; // actually change the name
+      // Save the new settings
       db.put(ref.settings, function(err, response) {
         if (err) {
           alert("there's been an error. try again.");
@@ -239,10 +245,12 @@ function renderSubjects(r) {
     }
   });
 
+  // delete subject
   $('button.delete').click(function() {
     var id = $(this).parent().children("span")[0].id;
-    if (confirm("Are you sure you want to delete " + ref.settings.rows[id-1][0] + "?")){
-      ref.settings.rows.splice(id-1, 1);
+    if (confirm("Are you sure you want to delete " + ref.settings.rows[id-1] + "?")){
+      ref.settings.rows.splice(id-1, 1); // splice out the row from settings
+      // save
       db.put(ref.settings, function(err, response) {
         if (err) {
           alert("there's been an error. try again.");
@@ -256,10 +264,14 @@ function renderSubjects(r) {
       });
     }
   });
+  // add subject
   $('button#add').click(function() {
     r = ref.settings.rows;
-    r.push(["Class", r[r.length-1][1]+1]);
+    // r.push(["Class", r[r.length-1][1]+1]);
+    // add row to subjects
+    r.push("Class");
     ref.settings.rows = r;
+    // save
     db.put(ref.settings, function(err, response) {
       if (err) {
         alert("there's been an error. try again.");
@@ -268,6 +280,7 @@ function renderSubjects(r) {
         db.get("settings").then(function(s) {
           ref.settings = s;
           renderRows(s.rows);
+          // select the new row
           $('span#'+String(s.rows.length)).prop('contenteditable', true);
           $('span#'+String(s.rows.length)).focus().selectText();
           // $('span#'+String(s.rows.length)).select();
