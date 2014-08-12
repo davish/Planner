@@ -57,9 +57,8 @@ function saveWeek(o) {
         'assignments': JSON.stringify(o)
       });
     }
-  }, function (err, response) {
+  }, function (err, response) { // document couldn't be found
     if(err) { // make a new document
-      // console.log(err);
       db.put({
         '_id': ref.monday.toISOString(),
         'assignments': JSON.stringify(o),
@@ -177,15 +176,7 @@ function renderRows(rows) {
       else
         labs.append('<div class="col-sm-2"><textarea class="labs ta" id="0' + String(j)+'"></textarea></div>');
     }
-    $("textarea").keydown(function(e) {
-      if (e.which == 13) {
-        var value = $(this).val().toLowerCase();
-        if (value.indexOf("test") != -1) {
-          var d = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + (this.id[1]-1));
-          console.log(((d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100) + " " + ref.settings.rows[this.id[0]-1]);
-        }
-      }
-    });
+    taListen();
     getWeek(setAssignmentValues);
 
   }
@@ -211,83 +202,8 @@ function renderSubjects(r) {
     $('#subjects').append('<div class="subj"><span id="'+(i+1)+'">'+r[i]+'</span> <button class="delete btn btn-xs btn-danger" style="display:none;">-</button></div>');
   $('#subjects').append('<div class="subj" id="0">Labs</div>')
 
-  $('.subj').unbind(); // When you add a subject, need to re-add all the listeners
-  $('.subj').children("span").click(function() {
-    if (this.id != 0) {
-      $(this).prop('contenteditable', true);
-    }
-  });
-  // mouseover logic
-  $('.subj').mouseenter(function() {
-    $(this).children("button").show();
-  });
-  $('.subj').mouseleave(function() {
-     $(this).children("button").hide();
-  });
-  // Save the subject name
-  $('.subj').children("span").blur(function() {
-    var id = this.id;
-    var subj = $(this).text();
-    if (id != 0) {
-      $(this).prop('contenteditable', false); // make it not editable
-      ref.settings.rows[id-1] = subj; // actually change the name
-      // Save the new settings
-      db.put(ref.settings, function(err, response) {
-        if (err) {
-          alert("there's been an error. try again.");
-          console.log(err);
-        } else {
-          db.get("settings").then(function(s) {
-            ref.settings = s;
-          });
-        }
-      });
-    }
-  });
-
-  // delete subject
-  $('button.delete').click(function() {
-    var id = $(this).parent().children("span")[0].id;
-    if (confirm("Are you sure you want to delete " + ref.settings.rows[id-1] + "?")){
-      ref.settings.rows.splice(id-1, 1); // splice out the row from settings
-      // save
-      db.put(ref.settings, function(err, response) {
-        if (err) {
-          alert("there's been an error. try again.");
-          console.log(err);
-        } else {
-          db.get("settings").then(function(s) {
-            ref.settings = s;
-            renderRows(s.rows);
-          });
-        }
-      });
-    }
-  });
-  // add subject
-  $('button#add').click(function() {
-    r = ref.settings.rows;
-    // r.push(["Class", r[r.length-1][1]+1]);
-    // add row to subjects
-    r.push("Class");
-    ref.settings.rows = r;
-    // save
-    db.put(ref.settings, function(err, response) {
-      if (err) {
-        alert("there's been an error. try again.");
-        console.log(err);
-      } else {
-        db.get("settings").then(function(s) {
-          ref.settings = s;
-          renderRows(s.rows);
-          // select the new row
-          $('span#'+String(s.rows.length)).prop('contenteditable', true);
-          $('span#'+String(s.rows.length)).focus().selectText();
-          // $('span#'+String(s.rows.length)).select();
-        });
-      }
-    });
-  });
+  subjectListen();
+  taListen();
 }
 
 function getMonday(d) {
@@ -312,22 +228,53 @@ function drawDates() {
 }
 
 $.fn.slide = function(dist, t, c) {
-    var element = this[0];
-    var p = $(element).css("position");
-    $(element).css("position", "relative");
-    if (!t)
-        t = 500;
-    $(element).animate({
-        left: "+=" + dist
-    }, t, function() {
-        $(element).css({left: -dist});
-        $(element).animate({left: 0}, t);
-        if (c)
-            c();
-    });
-    $(element).css("position", p);
+  // Slide an element to the left or right by a certaind distance, in pixels.
+  var element = this[0];
+  var p = $(element).css("position");
+  $(element).css("position", "relative");
+  if (!t)
+      t = 500;
+  $(element).animate({
+      left: "+=" + dist
+  }, t, function() {
+      $(element).css({left: -dist});
+      $(element).animate({left: 0}, t);
+      if (c)
+          c();
+  });
+  $(element).css("position", p);
 }
 
+function setReminder(obj, date, interval, metadata) {
+  /*
+    Structure of obj:
+    Keys are Date ISOStrings, values are arrays with each reminder being an object, with metadata such as the message, duedate, subject, etc.
+
+    Interval is in days.
+    Metadata is another object, with, well, metadata.
+  */
+
+  var dueDate = new Date(date).stripTime();
+
+  // Count backwards from the duedate, subtracting the number of days in the interval, so you get a date 
+  for (var d = new Date().stripTime(); d.getTime() < dueDate; d.setDate(d.getDate() + interval)) {
+    
+    if (obj[d.toISOString()])
+      obj[d.toISOString()].push(metadata);
+    else
+      obj[d.toISOString()] = [metadata];
+  };
+
+  return obj;
+}
+
+Date.prototype.stripTime = function() {
+  this.setMilliseconds(0)
+  this.setSeconds(0);
+  this.setMinutes(0);
+  this.setHours(0);
+  return this;
+}
 String.prototype.escapeHTML = function() {
     return $('<div/>').text(this).html();
 };
