@@ -1,6 +1,5 @@
 var ref = {
   'monday': getMonday(new Date())
-  // 'rows': [["English", 1], ["World History", 2], ["Albgebra", 3], ["Biology", 7], ["Spanish", 4], ["Computer Science", 5], ["Labs", 6]],
 };
 
 window.server = 'hermes.local';
@@ -257,12 +256,11 @@ function setReminder(obj, date, interval, metadata) {
   var dueDate = new Date(date).stripTime();
 
   // Count backwards from the duedate, subtracting the number of days in the interval, so you get a date 
-  for (var d = new Date().stripTime(); d.getTime() < dueDate; d.setDate(d.getDate() + interval)) {
-    
-    if (obj[d.toISOString()])
-      obj[d.toISOString()].push(metadata);
+  for (var d = dueDate; d.getTime() > new Date().stripTime(); d.setDate(d.getDate() - interval)) {
+    if (obj[d.toISOString().slice(0,10)])
+      obj[d.toISOString().slice(0,10)].push(metadata);
     else
-      obj[d.toISOString()] = [metadata];
+      obj[d.toISOString().slice(0,10)] = [metadata];
   };
 
   return obj;
