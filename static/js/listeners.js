@@ -10,7 +10,7 @@ $('document').ready(function() {
   });
   $('a#back').click(function() {
     // animation
-    $('#weekend').slide($(window).width(), 200);
+    $('#sidebar').slide($(window).width(), 200);
     $("#planner").slide($(window).width(), 200, function() {
       saveWeek(getAssignmentValues()); // save the current state
       ref.monday = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() - 7); // decrement by 1 week
@@ -19,7 +19,7 @@ $('document').ready(function() {
     });
   });
   $('a#next').click(function() {
-    $('#weekend').slide(-$(window).width(), 200);
+    $('#sidebar').slide(-$(window).width(), 200);
     $("#planner").slide(-$(window).width(), 200, function() {
       saveWeek(getAssignmentValues());
       ref.monday = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + 7);
