@@ -1,7 +1,7 @@
 var express = require("express"),
     app = express(),
     cookie = require('cookie'),
-    nano = require('nano')('http://davis:password@localhost:5984'),
+    nano = require('nano')('http://server:password@localhost:5984'),
     _users = nano.use('_users');
 
 app.configure(function() {  
