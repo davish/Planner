@@ -222,7 +222,11 @@ function genBlankAssignments() {
 function drawDates() {
   $('.day').each(function(index, element) {
     var d = new Date(ref.monday.getFullYear(), ref.monday.getMonth(), ref.monday.getDate() + index);
-    $(element).html('<span>' + $(element).children('span').html() + '</span> ' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100);
+    var isToday = (d.getFullYear = new Date().getFullYear && d.getMonth() == new Date().getMonth() && d.getDate() == new Date().getDate())
+    if (isToday)
+      $(element).html('<span id="today">' + $(element).children('span').html() + '</span> ' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100);
+    else
+      $(element).html('<span>' + $(element).children('span').html() + '</span> ' + (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getYear() % 100);
   });
 }
 
