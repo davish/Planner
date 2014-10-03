@@ -7,8 +7,28 @@ textarea {
 
   font-size: 12px;
   border-color: #777;
+  border-width: 1px;
 
 }
+
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  padding: 16px;
+}
+
+span#today {
+  font-weight: bold;
+}
+
+.weekendNote {
+  width: 100%px;
+  height: 140px;
+  border-width: 1px;
+}
+
 .input-group {
   width: 50%;
 }
