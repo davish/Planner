@@ -22,7 +22,7 @@ app.configure(function() {
 });
 
 app.get('/', function(req, res) {
-  res.send("Hello, World!");
+  res.redirect("/planner");
 });
 
 app.get('/planner', function(req, res) {
