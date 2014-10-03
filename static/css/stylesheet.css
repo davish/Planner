@@ -13,6 +13,8 @@ textarea {
 
 .navbar {
   border-radius: 0;
+  line-height: 20px;
+  height: 20px;
 }
 
 .navbar-brand {
@@ -22,7 +24,10 @@ textarea {
 span#today {
   font-weight: bold;
 }
-
+#buttons {
+  position: relative;
+  bottom: 17px;
+}
 .weekendNote {
   width: 100%px;
   height: 140px;
@@ -69,7 +74,8 @@ span#today {
   border-width: 1px;
 }
 .note#box {
-  height: 118px;
+  height: 119px;
+  border-bottom-width: 2px;
 }
 
 div#planner  {
@@ -80,4 +86,8 @@ div#planner  {
 }
 #sidebar {
   position:relative;
+  left: -1px;
+  
+  padding-top:1px;
+  border-left-width: 2px;
 }
