@@ -58,7 +58,7 @@ $('document').ready(function() {
   */
   $("form#login").submit(function(e) {
     e.preventDefault();
-    login($('#loginUsername').val(), $('#loginPassword').val(), function(data) {
+    login($('#loginUsername').val().toLowerCase(), $('#loginPassword').val(), function(data) {
       $('.loginModal').modal('hide');
       $('li#username').children('a').text(data.user);
       $('.loggedIn').show();
@@ -77,7 +77,7 @@ $('document').ready(function() {
   $("form#signup").submit(function(e) {
     e.preventDefault();
     if ($('#signupPasswordVerify').val() == $('#signupPassword').val()) {    
-      signup($('#signupUsername').val(), $('#signupPassword').val(), function(data) {
+      signup($('#signupUsername').val().toLowerCase(), $('#signupPassword').val(), function(data) {
         $('.signupModal').modal('hide');
         $('li#username').children('a').text(data.user);
         $('.loggedIn').show();
