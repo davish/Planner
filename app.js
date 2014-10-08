@@ -1,7 +1,8 @@
 var express = require("express"),
     app = express(),
     cookie = require('cookie'),
-    nano = require('nano')('http://server:password@localhost:5984'),
+    // nano = require('nano')('http://server:password@localhost:5984'),
+    nano = require('nano')('http://server:password@davish.iriscouch.com'),
     _users = nano.use('_users');
 
 app.configure(function() {  
@@ -36,7 +37,7 @@ app.get('/settings', function(req, res) {
 app.post('/signup', function(req, res) {
   /* Look to see if user exists */
   _users.get('org.couchdb.user:' + req.body.username, function(err, body) {
-    if (!err) { // user is present in the database, go directly to login authorization.
+    if (!err) { // user is present in the database
       res.send(403, {'message': 'The username you attempted to sign up with already exists.'});
     } else if (err['message'] == 'missing' || err['status-code'] == 404) { // if the user isn't registered in the database, proceed with signup process
       signup(req, res);
