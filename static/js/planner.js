@@ -2,7 +2,7 @@ var ref = {
   'monday': getMonday(new Date())
 };
 
-window.server = 'hermes.local';
+window.server = 'davish.iriscouch.com'; // hermes.local
 
 var db = null;
 var remoteCouch = false;
@@ -69,13 +69,13 @@ function saveWeek(o) {
 }
 
 function getWeek(c) {
-  db.get(ref.monday.toISOString()).then(function(w) {
+  db.get(ref.monday.toISOString().slice(0,10)).then(function(w) {
     c(JSON.parse(w.assignments));
   }, function (err, response) {
     if(err) { // make a new document
       c(genBlankAssignments());
       db.put({
-        '_id': ref.monday.toISOString(),
+        '_id': ref.monday.toISOString().slice(0,10),
         'assignments': JSON.stringify(genBlankAssignments())
       });
       
